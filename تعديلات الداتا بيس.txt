@@ -1,0 +1,7 @@
+centers_id في جدول ال cairo _order_supply_temporary
+
+centers_id   في جدول cairo_order_supply_inv
+
+هنضيف جدول  cairo_order_supply_log
+
+cairo_stores_change   فى جدول item_status 
