@@ -11,6 +11,7 @@ error_reporting(0);
 $req_uri = $_SERVER['REQUEST_URI'];
 $tenantName = explode('/', substr($req_uri, 1, strrpos($req_uri, '/')))[0];
 $db_suffix = "etolv_";
+$db_suffix = "cairo_";
 /*
 $tenant_res = $db_suffix . $tenantName;
 $databasehost = "localhost";
@@ -23,11 +24,11 @@ $databaseuser="root";
 $databasepass="";
 $databasename="pos";
 
-if ("localhost:8080" == $_SERVER['HTTP_HOST'] || true) {
+if ("localhost:2222" == $_SERVER['HTTP_HOST'] || true) {
 
     $databaseuser = "root";
     $databasepass = "";
-    $databasename = "fly4u_merchants";
+    $databasename = "marchent";
 //    $databasename="merchants";
 //    $databasename="mtest";
 
@@ -183,7 +184,6 @@ if (isset($_POST['Editconfig'])) {
 }
 ?>
 <?php
-
 $result_get = @mysqli_query($con, "SELECT * FROM " . $prefix . "_config where id='1'");
 if (@mysqli_num_rows($result_get) > 0) {
     while ($row_get = mysqli_fetch_array($result_get)) {
