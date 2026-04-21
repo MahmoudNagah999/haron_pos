@@ -451,11 +451,11 @@ if ($user_stores_change !== "1" and $user_IsAdmin != 1) {
             }
             #############################
             if ($Discount_type == 1) {
-                $total_val = $row['Total'] - ($row['discount']);
+                $total_val = (float)$row['Total'] - (float)($row['discount']);
             } else if ($Discount_type == 2) {
-                $total_val = $row['Total'] - ($row['Total'] * $row['discount'] / 100);
+                $total_val = (float)$row['Total'] - ((float)$row['Total'] * (float)$row['discount'] / 100);
             } else {
-                $total_val = $row['Total'] - ($row['discount']);
+                $total_val = (float)$row['Total'] - (float)($row['discount']);
             }
             $total_val_after_tax_and_shipping =  $total_val + $row['tax'] + $row['shipping'];
         ?>

@@ -1,41 +1,35 @@
 <?php
 include "includes/inc.php";
-$status = $_GET['status'];
-$branch = $_GET['branch'];
-$region = $_GET['region'];
-$user_id = $_GET['user_id'];
-$Alpha = $_GET['Alpha'];
-$product_id = $_GET['products'];
+$status = (array)$_GET['status'];
+$branch = (array)$_GET['branch'];
+$region = (array)$_GET['region'];
+$user_id = (array)$_GET['user_id'];
+$Alpha = (array)$_GET['Alpha'];
+$product_id = (array)$_GET['products'];
 $date_from = str_replace("/", "-", $_GET['date_from']);
 $date_to = str_replace("/", "-", $_GET['date_to']);
 $date_from = stripslashes(date('Y-m-d', strtotime($date_from)));
 $date_to = stripslashes(date('Y-m-d', strtotime($date_to)));
-if (count($region) == 1 && $region[0] == '1000000000') {
+if (is_array($region) && count($region) == 1 && $region[0] == '1000000000') {
     $skip_region = 1;
 } else {
     $skip_region = 0;
 }
 
-//echo $status[0];
-if (count($status) == 1 && $status[0] == '1000000000') {
+if (is_array($status) && count($status) == 1 && $status[0] == '1000000000') {
     $skip_status = 1;
 } else {
     $skip_status = 0;
 }
-if (count($branch) == 1 && $branch[0] == '1000000000') {
+if (is_array($branch) && count($branch) == 1 && $branch[0] == '1000000000') {
     $skip_branch = 1;
 } else {
     $skip_branch = 0;
 }
 function get_all_orders_count()
 {
-    global $con;
-    global $prefix;
-    global $status;
-    global $date_from;
-    global $date_to;
-    global $skip_region;
-    global $skip_status;
+    global $con, $prefix, $status, $date_from, $date_to, $skip_region, $skip_status, $region, $branch, $skip_branch, $user_id, $Alpha, $product_id;
+    $q_status = $q_region = $q_branch = $q_user_id = $q_alpha = $q_products_sql = $sql_date = "";
 
     global $region;
     if (empty($region)) {
@@ -100,12 +94,8 @@ function get_all_orders_count()
 
 function get_all_orders_count_not_know()
 {
-    global $con;
-    global $prefix;
-    global $date_from;
-    global $date_to;
-    global $status;
-    global $skip_status;
+    global $con, $prefix, $date_from, $date_to, $status, $skip_status, $branch, $skip_branch, $product_id, $user_id, $Alpha;
+    $q_status = $q_region = $q_branch = $q_user_id = $q_alpha = $q_products_sql = $sql_date = "";
 
     if (empty($status) || $skip_status == 1) {
     } else {
@@ -131,12 +121,10 @@ function get_all_orders_count_not_know()
     }
     ################
     global $product_id;
-    $arr_product_id = implode(", ", $product_id);
-    $q_products_sql = " and inv_id in (SELECT inv_id from  cairo_order_supply where item in (select id from items where groupid in ($arr_product_id)))";
-
+    $q_products_sql = "";
     if (empty($product_id)) {
     } else {
-        // $q_products="SELECT inv_id from  cairo_order_supply where item in (select id from items where groupid= $product_id)";
+        $arr_product_id = implode(", ", $product_id);
         $q_products_sql = " and inv_id in (SELECT inv_id from  cairo_order_supply where item in (select id from items where groupid in ($arr_product_id)))";
     }
     #############
@@ -147,7 +135,7 @@ function get_all_orders_count_not_know()
         $q_user_id = " and user_id in ($arr_userid)";
     }
     ############################
-    $result_order_supply_status = @mysqli_query($con, "SELECT branch_id,COUNT(*) as counts,date FROM " . $prefix . "_order_supply_inv where region_id=0 $q_status $q_branch  $q_user_id $q_products_sql $sql_date GROUP BY branch_id");
+    $result_order_supply_status = @mysqli_query($con, "SELECT branch_id,COUNT(*) as counts FROM " . $prefix . "_order_supply_inv where region_id=0 $q_status $q_branch  $q_user_id $q_products_sql $sql_date GROUP BY branch_id");
     $num_order_supply_status = @mysqli_num_rows($result_order_supply_status);
     if ($num_order_supply_status > 0) {
         while ($row_order_supply_status = mysqli_fetch_array($result_order_supply_status)) {
@@ -164,7 +152,7 @@ $sumArray = array();
 
 foreach ($orders_total_value_status as $k => $subArray) {
     foreach ($subArray as $id => $value) {
-        $sumArray[$id] += $value;
+        $sumArray[$id] = ($sumArray[$id] ?? 0) + $value;
     }
 }
 
@@ -258,7 +246,7 @@ $Total_final = array_sum($sumArray);
                     $result_search_products = mysqli_query($con, "SELECT id,product_name FROM products order by product_name ASC");
                     if (@mysqli_num_rows($result_search_products) > 0) {
                         while ($row_search_products = mysqli_fetch_array($result_search_products)) {
-                            if (in_array($row_search_products['id'], $_GET['products'])) {
+                            if (in_array($row_search_products['id'], $product_id)) {
                                 echo ' <option value="' . $row_search_products['id'] . '"  selected>' . $row_search_products['product_name'] . '</option>';
                             } else {
                                 echo ' <option value="' . $row_search_products['id'] . '">' . $row_search_products['product_name'] . '</option>';
@@ -299,7 +287,7 @@ $Total_final = array_sum($sumArray);
             </div>
             <div class="form-group mb-2">
                 <select name="status[]" class="form-control js-example-basic-multiple-limit" multiple>
-                    <option value="1000000000" <?php if ($_GET['status'] == null || in_array("1000000000", $_GET['status'])) {
+                    <option value="1000000000" <?php if (empty($status) || in_array("1000000000", $status)) {
                                                     echo "selected";
                                                 } ?>>اختر الحالة
                     </option>
@@ -307,7 +295,7 @@ $Total_final = array_sum($sumArray);
                     $result_search = mysqli_query($con, "SELECT id,name FROM cairo_order_supply_status order by id ASC");
                     if (@mysqli_num_rows($result_search) > 0) {
                         while ($row_search = mysqli_fetch_array($result_search)) {
-                            if (in_array($row_search['id'], $_GET['status'])) {
+                            if (in_array($row_search['id'], $status)) {
                                 echo ' <option value="' . $row_search['id'] . '" selected>' . $row_search['name'] . '</option>';
                             } else {
                                 echo ' <option value="' . $row_search['id'] . '">' . $row_search['name'] . '</option>';
@@ -324,7 +312,7 @@ $Total_final = array_sum($sumArray);
                     <select id="Alpha" multiple="multiple" name="Alpha[]" size="1" class="w100 placeholder-single_order_status js-states form-control">
                         <?php
                         foreach ($alphapatic as $value) {
-                            if (in_array($value, $_GET['Alpha'])) {
+                        if (in_array($value, $Alpha)) {
                                 echo '<option data-attrchangeid ="' . $value . '" value="' . $value . '"   selected="selected">' . $value . '</option>';
                             } else {
                                 echo '<option data-attrchangeid ="' . $value . '" value="' . $value . '">' . $value . '</option>';
@@ -341,7 +329,7 @@ $Total_final = array_sum($sumArray);
                     $result_search_branch = mysqli_query($con, "SELECT id,name FROM cairo_branch order by name ASC");
                     if (@mysqli_num_rows($result_search_branch) > 0) {
                         while ($row_search_branch = mysqli_fetch_array($result_search_branch)) {
-                            if (in_array($row_search_branch['id'], $_GET['branch'])) {
+                            if (in_array($row_search_branch['id'], $branch)) {
                                 echo ' <option value="' . $row_search_branch['id'] . '"  selected>' . $row_search_branch['name'] . '</option>';
                             } else {
                                 echo ' <option value="' . $row_search_branch['id'] . '">' . $row_search_branch['name'] . '</option>';
@@ -355,7 +343,7 @@ $Total_final = array_sum($sumArray);
             </div>
             <div class="form-group mb-2">
                 <select name="region[]" class="form-control js-example-basic-multiple-limit" multiple>
-                    <option value="1000000000" <?php if ($_GET['region'] == null || in_array("1000000000", $_GET['region'])) {
+                    <option value="1000000000" <?php if (empty($region) || in_array("1000000000", $region)) {
                                                     echo "selected";
                                                 } ?>>المنطقة
                     </option>
@@ -363,7 +351,7 @@ $Total_final = array_sum($sumArray);
                     $result_search_region = mysqli_query($con, "SELECT id,name FROM cairo_region order by name ASC");
                     if (@mysqli_num_rows($result_search_region) > 0) {
                         while ($row_search_region = mysqli_fetch_array($result_search_region)) {
-                            if (in_array($row_search_region['id'], $_GET['region'])) {
+                            if (in_array($row_search_region['id'], $region)) {
                                 echo ' <option value="' . $row_search_region['id'] . '"  selected>' . $row_search_region['name'] . '</option>';
                             } else {
                                 echo ' <option value="' . $row_search_region['id'] . '">' . $row_search_region['name'] . '</option>';
@@ -383,7 +371,7 @@ $Total_final = array_sum($sumArray);
                     $result_search_user_id = mysqli_query($con, "SELECT id,name FROM cairo_users order by name ASC");
                     if (@mysqli_num_rows($result_search_user_id) > 0) {
                         while ($row_search_user_id = mysqli_fetch_array($result_search_user_id)) {
-                            if (in_array($row_search_user_id['id'], $_GET['user_id'])) {
+                            if (in_array($row_search_user_id['id'], $user_id)) {
                                 echo ' <option value="' . $row_search_user_id['id'] . '"  selected>' . $row_search_user_id['name'] . '</option>';
                             } else {
                                 echo ' <option value="' . $row_search_user_id['id'] . '">' . $row_search_user_id['name'] . '</option>';
@@ -449,21 +437,24 @@ $Total_final = array_sum($sumArray);
 
                         $trrr =  '<tr ' . $bgcolor . '>';
 
-                        $xyz = array_sum($orders_total_value_status[$row['id']]);
+                        $xyz = array_sum((array)($orders_total_value_status[$row['id']] ?? []));
                         $xyzVal = ($xyz != '') ? $xyz : '-';
                         $trrr .= '<td style="text-align:center;font-size:17px;border:1px solid #000;color:black">' . $xyzVal . '</td>';
 
                         $SumOfValues = 0;
                         foreach ($get_all_oprders_status['id'] as $value) {
-                            $sum_status[$value] += $orders_total_value_status[$row['id']][$value];
-                            $value1 = ($orders_total_value_status[$row['id']][$value] != '') ? $orders_total_value_status[$row['id']][$value] : '-';
-                            $SumOfValues += $value1;
-                            $trrr .= '<td style="text-align:center;font-size:17px;border:1px solid #000;color:black">' . $value1 . '</td>';
+                            $raw_val = (int)$orders_total_value_status[$row['id']][$value];
+                            $sum_status[$value] = ($sum_status[$value] ?? 0) + $raw_val;
+                            $SumOfValues += $raw_val;
+                            $value_display = ($raw_val != 0) ? $raw_val : '-';
+                            $trrr .= '<td style="text-align:center;font-size:17px;border:1px solid #000;color:black">' . $value_display . '</td>';
                         }
                         $trrr .= '<td style="text-align:center;font-size:17px;border:1px solid #000;color:black">' . $row['name'] . '</td>';
                         $trrr .= '<td style="text-align:center;font-size:17px;border:1px solid #000;color:black">' . $SumOfValues . '</td>';
                         $SumOfValuesArr[] = $SumOfValues;
-                        $total_rate += (($xyz / $Total_final) * 100);
+                        if ($Total_final > 0) {
+                            $total_rate += (($xyz / $Total_final) * 100);
+                        }
                         //                var_dump($value1);
                         //                var_dump($Total_final);
                         $percent = ($xyz > 0) ? round((($SumOfValues / $xyz) * 100), 2) : 0;
@@ -486,14 +477,18 @@ $Total_final = array_sum($sumArray);
                     echo '<tr class="' . $class . '">';
                     echo '<td style="text-align:center;font-size:20px;border:2px solid #000">غير معروفة</td>';
 
+                    $sum_status_not_know = 0;
                     foreach ($get_all_oprders_status['id'] as $value) {
-                        $sum_status_not_know += $get_all_orders_count_not_know[$value];
-                        echo '<td style="text-align:center;font-size:20px;border:2px solid #000">' . $get_all_orders_count_not_know[$value] . '</td>';
+                        $raw_val_not_know = (int)$get_all_orders_count_not_know[$value];
+                        $sum_status_not_know += $raw_val_not_know;
+                        echo '<td style="text-align:center;font-size:20px;border:2px solid #000">' . $raw_val_not_know . '</td>';
                     }
                     echo '<td style="text-align:center;font-size:20px;border:2px solid #000"></td>';
                     echo '<td style="text-align:center;font-size:20px;border:2px solid #000">' . $sum_status_not_know . '</td>';
-                    echo '<td style="text-align:center;font-size:20px;border:2px solid #000">' . round((($sum_status_not_know / $Total_final) * 100), 2) . '</td>';
-                    $total_rate += (($sum_status_not_know / $Total_final) * 100);
+                    echo '<td style="text-align:center;font-size:20px;border:2px solid #000">' . ($Total_final > 0 ? round((($sum_status_not_know / $Total_final) * 100), 2) : 0) . '</td>';
+                    if ($Total_final > 0) {
+                        $total_rate += (($sum_status_not_know / $Total_final) * 100);
+                    }
 
                     echo '</tr>';
                 }

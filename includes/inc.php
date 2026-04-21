@@ -3,9 +3,10 @@
 //die();
 ob_start(); // Initiate the output buffer
 //ini_set('display_errors', 1);
+set_time_limit(300);
 //error_reporting(~0);
 /* check connection */
-error_reporting(0);
+error_reporting(1);
 /* ini_set('display_errors',1);
   ini_set('display_startup_errors',1);
   error_reporting(-1); */
@@ -25,7 +26,7 @@ $databasename = $tenant_res;
 $databaseuser = "root";
 $databasepass = "123456";
 $databasename = "pos";
-$databasehost="localhost";
+$databasehost = "localhost";
 //$databasehost = "127.0.0.1";
 
 
@@ -292,7 +293,7 @@ function Get_total_items($sizeid, $colorid, $item)
 
     if ($num_qty > 0) {
         while ($row_qty = mysqli_fetch_array($result_qty)) {
-            $totalqty += $row_qty[Quantitya];
+            $totalqty += $row_qty['Quantitya'];
         }
         return $totalqty;
     }
@@ -303,6 +304,7 @@ function GetQuantity($id, $all = null, $store_id = 0, $date_from = null, $date_t
 {
     global $con;
     global $prefix;
+    $Quantitytotallast = 0;
     ############################
     $sqlConStoreReceiv = '';
     $sqlConStoreSale = '';
@@ -426,11 +428,11 @@ function get_user_data($id)
 {
     global $con;
     global $prefix;
-    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_users where id=" . $id . "");
+    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_users where id='" . $id . "'");
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[name] = $row['name'];
+            $data['name'] = $row['name'];
         }
     }
     return $data;
@@ -692,12 +694,12 @@ function get_staff_data($id)
 {
     global $con;
     global $prefix;
-    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_staff where id=" . $id . "");
+    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_staff where id='" . $id . "'");
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[name] = $row['name'];
-            $data[commission] = $row['commission'];
+            $data['name'] = $row['name'];
+            $data['commission'] = $row['commission'];
         }
     }
     return $data;
@@ -707,12 +709,12 @@ function get_order_supply_status_data($id)
 {
     global $con;
     global $prefix;
-    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_order_supply_status where id=" . $id . "");
+    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_order_supply_status where id='" . $id . "'");
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[name] = $row['name'];
-            $data[notes] = $row['notes'];
+            $data['name'] = $row['name'];
+            $data['notes'] = $row['notes'];
         }
     }
     return $data;
@@ -722,12 +724,12 @@ function get_region_data($id)
 {
     global $con;
     global $prefix;
-    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_region where id=" . $id . "");
+    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_region where id='" . $id . "'");
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[name] = $row['name'];
-            $data[notes] = $row['notes'];
+            $data['name'] = $row['name'];
+            $data['notes'] = $row['notes'];
         }
     }
     return $data;
@@ -736,12 +738,12 @@ function get_centers_data($id)
 {
     global $con;
     global $prefix;
-    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_centers where id=" . $id . "");
+    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_centers where id='" . $id . "'");
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[name] = $row['name'];
-            $data[notes] = $row['notes'];
+            $data['name'] = $row['name'];
+            $data['notes'] = $row['notes'];
         }
     }
     return $data;
@@ -830,7 +832,7 @@ function get_branch_data($id)
             $data["logo"] = $row['logo'];
         }
     } else {
-        $data[name] = '-';
+        $data['name'] = '-';
     }
     return $data;
 }
@@ -843,7 +845,7 @@ function get_product_store_data($item, $store_id)
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[Quantity] = $row['Quantity'];
+            $data['Quantity'] = $row['Quantity'];
         }
     }
     return $data;
@@ -887,12 +889,12 @@ function get_store_data($id)
 {
     global $con;
     global $prefix;
-    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_store where id=" . $id . "");
+    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_store where id='" . $id . "'");
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[name] = $row['name'];
-            $data[notes] = $row['notes'];
+            $data['name'] = $row['name'];
+            $data['notes'] = $row['notes'];
         }
     }
     return $data;
@@ -902,12 +904,12 @@ function get_safe_data($id)
 {
     global $con;
     global $prefix;
-    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_safe where id=" . $id . "");
+    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_safe where id='" . $id . "'");
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[name] = $row['name'];
-            $data[notes] = $row['notes'];
+            $data['name'] = $row['name'];
+            $data['notes'] = $row['notes'];
         }
     }
     return $data;
@@ -932,13 +934,13 @@ function get_treasury_data($ids, $safe_id)
 
         $i = 0;
         while ($row = mysqli_fetch_array($result)) {
-            $data[$i][id] = $row['id'];
-            $data[$i][name] = $row['name'];
-            $data[$i][type] = $row['type'];
-            $data[$i][safe_id] = $row['safe_id'];
-            $data[$i][Amount] = $row['Amount'];
-            $data[$i][date] = $row['date'];
-            $data[$i][notes] = $row['notes'];
+            $data[$i]['id'] = $row['id'];
+            $data[$i]['name'] = $row['name'];
+            $data[$i]['type'] = $row['type'];
+            $data[$i]['safe_id'] = $row['safe_id'];
+            $data[$i]['Amount'] = $row['Amount'];
+            $data[$i]['date'] = $row['date'];
+            $data[$i]['notes'] = $row['notes'];
 
             $i++;
         }
@@ -969,26 +971,26 @@ function get_inv_data($id, $type)
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[id] = $row['id'];
-            $data[branch_id] = $row['branch_id'];
-            $data[safe_id] = $row['safe_id'];
-            $data[store_id] = $row['store_id'];
-            $data[inv_id] = $row['inv_id'];
-            $data[date] = $row['date'];
-            $data[discount] = $row['discount'];
-            $data[Total] = $row['Total'];
-            $data[supplier] = $row['supplier'];
-            $data[PaymentMethod] = $row['PaymentMethod'];
-            $data[paid] = $row['paid'];
-            $data[DueDate] = $row['DueDate'];
-            $data[CheckNumber] = $row['CheckNumber'];
-            $data[notes] = $row['notes'];
-            $data[type] = $row['type'];
-            $data[sales_type] = $row['sales_type'];
-            $data[tax] = $row['tax'];
-            $data[doc] = $row['doc'];
-            $data[staff] = $row['staff'];
-            $data[shipping] = $row['shipping'];
+            $data['id'] = $row['id'];
+            $data['branch_id'] = $row['branch_id'];
+            $data['safe_id'] = $row['safe_id'];
+            $data['store_id'] = $row['store_id'];
+            $data['inv_id'] = $row['inv_id'];
+            $data['date'] = $row['date'];
+            $data['discount'] = $row['discount'];
+            $data['Total'] = $row['Total'];
+            $data['supplier'] = $row['supplier'];
+            $data['PaymentMethod'] = $row['PaymentMethod'];
+            $data['paid'] = $row['paid'];
+            $data['DueDate'] = $row['DueDate'];
+            $data['CheckNumber'] = $row['CheckNumber'];
+            $data['notes'] = $row['notes'];
+            $data['type'] = $row['type'];
+            $data['sales_type'] = $row['sales_type'];
+            $data['tax'] = $row['tax'];
+            $data['doc'] = $row['doc'];
+            $data['staff'] = $row['staff'];
+            $data['shipping'] = $row['shipping'];
         }
         return $data;
     }
@@ -1002,12 +1004,12 @@ function get_stores_change_inv_data($id)
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[inv_id] = $row['inv_id'];
-            $data[date] = $row['date'];
-            $data[id] = $row['id'];
-            $data[notes] = $row['notes'];
-            $data[store_from_id] = $row['store_from_id'];
-            $data[store_to_id] = $row['store_to_id'];
+            $data['inv_id'] = $row['inv_id'];
+            $data['date'] = $row['date'];
+            $data['id'] = $row['id'];
+            $data['notes'] = $row['notes'];
+            $data['store_from_id'] = $row['store_from_id'];
+            $data['store_to_id'] = $row['store_to_id'];
         }
         return $data;
     }
@@ -1021,11 +1023,11 @@ function get_offers_data($id)
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[id] = $row['id'];
-            $data[inv_id] = $row['inv_id'];
-            $data[date] = $row['date'];
-            $data[Total] = $row['Total'];
-            $data[name] = $row['name'];
+            $data['id'] = $row['id'];
+            $data['inv_id'] = $row['inv_id'];
+            $data['date'] = $row['date'];
+            $data['Total'] = $row['Total'];
+            $data['name'] = $row['name'];
         }
         return $data;
     }
@@ -1040,30 +1042,30 @@ function get_order_supply_data($id, $type)
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[id] = $row['id'];
-            $data[branch_id] = $row['branch_id'];
-            $data[inv_id] = $row['inv_id'];
-            $data[client] = $row['client'];
-            $data[address] = $row['address'];
-            $data[mobile1] = $row['mobile1'];
-            $data[mobile2] = $row['mobile2'];
-            $data[region_id] = $row['region_id'];
-            $data[alpha] = $row['alpha'];
-            $data[date] = $row['date'];
-            $data[discount] = $row['discount'];
-            $data[Total] = $row['Total'];
-            $data[supplier] = $row['supplier'];
-            $data[PaymentMethod] = $row['PaymentMethod'];
-            $data[paid] = $row['paid'];
-            $data[DueDate] = $row['DueDate'];
-            $data[CheckNumber] = $row['CheckNumber'];
-            $data[notes] = $row['notes'];
-            $data[type] = $row['type'];
-            $data[sales_type] = $row['sales_type'];
-            $data[tax] = $row['tax'];
-            $data[doc] = $row['doc'];
-            $data[staff] = $row['staff'];
-            $data[shipping] = $row['shipping'];
+            $data['id'] = $row['id'];
+            $data['branch_id'] = $row['branch_id'];
+            $data['inv_id'] = $row['inv_id'];
+            $data['client'] = $row['client'];
+            $data['address'] = $row['address'];
+            $data['mobile1'] = $row['mobile1'];
+            $data['mobile2'] = $row['mobile2'];
+            $data['region_id'] = $row['region_id'];
+            $data['alpha'] = $row['alpha'];
+            $data['date'] = $row['date'];
+            $data['discount'] = $row['discount'];
+            $data['Total'] = $row['Total'];
+            $data['supplier'] = $row['supplier'];
+            $data['PaymentMethod'] = $row['PaymentMethod'];
+            $data['paid'] = $row['paid'];
+            $data['DueDate'] = $row['DueDate'];
+            $data['CheckNumber'] = $row['CheckNumber'];
+            $data['notes'] = $row['notes'];
+            $data['type'] = $row['type'];
+            $data['sales_type'] = $row['sales_type'];
+            $data['tax'] = $row['tax'];
+            $data['doc'] = $row['doc'];
+            $data['staff'] = $row['staff'];
+            $data['shipping'] = $row['shipping'];
         }
         return $data;
     }
@@ -1174,36 +1176,36 @@ function get_order_supply_inv_data_by_id
     if ($num > 0) {
         $i = 0;
         while ($row = mysqli_fetch_array($result)) {
-            $data[$i][id] = $row['id'];
-            $data[$i][inv_id] = $row['inv_id'];
-            $data[$i][branch_id] = $row['branch_id'];
-            $data[$i][address] = $row['address'];
-            $data[$i][status] = $row['status'];
-            $data[$i][notes] = $row['notes'];
-            $data[$i][mobile2] = $row['mobile2'];
-            $data[$i][mobile1] = $row['mobile1'];
-            $data[$i][client] = $row['client'];
-            $data[$i][region_id] = $row['region_id'];
-            $data[$i][region_name] = get_region_data($row['region_id'])[name];
-            $data[$i][branch_name] = get_branch_data($row['branch_id'])[name];
-            echo $data[$i][branch_logo] = get_branch_data($row['branch_id'])[logo];
-            $data[$i][date] = $row['date'];
-            $data[$i][discount] = $row['discount'];
-            $data[$i][Total] = $row['Total'];
-            $data[$i][supplier] = $row['supplier'];
-            $data[$i][PaymentMethod] = $row['PaymentMethod'];
-            $data[$i][paid] = $row['paid'];
-            $data[$i][DueDate] = $row['DueDate'];
-            $data[$i][CheckNumber] = $row['CheckNumber'];
-            $data[$i][notes] = $row['notes'];
-            $data[$i][type] = $row['type'];
-            $data[$i][sales_type] = $row['sales_type'];
-            $data[$i][tax] = $row['tax'];
-            $data[$i][doc] = $row['doc'];
-            $data[$i][staff] = $row['staff'];
-            $data[$i][shipping] = $row['shipping'];
-            $data[$i][user_id] = get_user_data($row['user_id'])['name'];
-            $data[$i][edit_user] = get_user_data($row['edit_user'])['name'];
+            $data[$i]['id'] = $row['id'];
+            $data[$i]['inv_id'] = $row['inv_id'];
+            $data[$i]['branch_id'] = $row['branch_id'];
+            $data[$i]['address'] = $row['address'];
+            $data[$i]['status'] = $row['status'];
+            $data[$i]['notes'] = $row['notes'];
+            $data[$i]['mobile2'] = $row['mobile2'];
+            $data[$i]['mobile1'] = $row['mobile1'];
+            $data[$i]['client'] = $row['client'];
+            $data[$i]['region_id'] = $row['region_id'];
+            $data[$i]['region_name'] = get_region_data($row['region_id'])['name'];
+            $data[$i]['branch_name'] = get_branch_data($row['branch_id'])['name'];
+            echo $data[$i]['branch_logo'] = get_branch_data($row['branch_id'])['logo'];
+            $data[$i]['date'] = $row['date'];
+            $data[$i]['discount'] = $row['discount'];
+            $data[$i]['Total'] = $row['Total'];
+            $data[$i]['supplier'] = $row['supplier'];
+            $data[$i]['PaymentMethod'] = $row['PaymentMethod'];
+            $data[$i]['paid'] = $row['paid'];
+            $data[$i]['DueDate'] = $row['DueDate'];
+            $data[$i]['CheckNumber'] = $row['CheckNumber'];
+            $data[$i]['notes'] = $row['notes'];
+            $data[$i]['type'] = $row['type'];
+            $data[$i]['sales_type'] = $row['sales_type'];
+            $data[$i]['tax'] = $row['tax'];
+            $data[$i]['doc'] = $row['doc'];
+            $data[$i]['staff'] = $row['staff'];
+            $data[$i]['shipping'] = $row['shipping'];
+            $data[$i]['user_id'] = get_user_data($row['user_id'])['name'];
+            $data[$i]['edit_user'] = get_user_data($row['edit_user'])['name'];
             $i++;
         }
         return $data;
@@ -1271,12 +1273,12 @@ function get_stores_change_inv_data_by_id
     if ($num > 0) {
         $i = 0;
         while ($row = mysqli_fetch_array($result)) {
-            $data[$i][id] = $row['id'];
-            $data[$i][inv_id] = $row['inv_id'];
-            $data[$i][date] = $row['date'];
-            $data[$i][notes] = $row['notes'];
-            $data[$i][store_from_id] = $row['store_from_id'];
-            $data[$i][store_to_id] = $row['store_to_id'];
+            $data[$i]['id'] = $row['id'];
+            $data[$i]['inv_id'] = $row['inv_id'];
+            $data[$i]['date'] = $row['date'];
+            $data[$i]['notes'] = $row['notes'];
+            $data[$i]['store_from_id'] = $row['store_from_id'];
+            $data[$i]['store_to_id'] = $row['store_to_id'];
             $i++;
         }
         return $data;
@@ -1292,22 +1294,22 @@ function get_receivings_inv_data($id, $type)
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[id] = $row['id'];
-            $data[vat] = $row['vat'];
-            $data[safe_id] = $row['safe_id'];
-            $data[store_id] = $row['store_id'];
-            $data[inv_id] = $row['inv_id'];
-            $data[date] = $row['date'];
-            $data[discount] = $row['discount'];
-            $data[Total] = $row['Total'];
-            $data[supplier] = $row['supplier'];
-            $data[PaymentMethod] = $row['PaymentMethod'];
-            $data[paid] = $row['paid'];
-            $data[DueDate] = $row['DueDate'];
-            $data[CheckNumber] = $row['CheckNumber'];
-            $data[notes] = $row['notes'];
-            $data[type] = $row['type'];
-            $data[doc] = $row['doc'];
+            $data['id'] = $row['id'];
+            $data['vat'] = $row['vat'];
+            $data['safe_id'] = $row['safe_id'];
+            $data['store_id'] = $row['store_id'];
+            $data['inv_id'] = $row['inv_id'];
+            $data['date'] = $row['date'];
+            $data['discount'] = $row['discount'];
+            $data['Total'] = $row['Total'];
+            $data['supplier'] = $row['supplier'];
+            $data['PaymentMethod'] = $row['PaymentMethod'];
+            $data['paid'] = $row['paid'];
+            $data['DueDate'] = $row['DueDate'];
+            $data['CheckNumber'] = $row['CheckNumber'];
+            $data['notes'] = $row['notes'];
+            $data['type'] = $row['type'];
+            $data['doc'] = $row['doc'];
         }
         return $data;
     }
@@ -1321,9 +1323,9 @@ function get_client_data($id)
     $result = mysqli_query($con, "SELECT * FROM " . $prefix . "_clients WHERE id=" . $id . "");
     if (@mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[id] = $row['id'];
-            $data[name] = $row['name'];
-            $data[phone] = $row['phone'];
+            $data['id'] = $row['id'];
+            $data['name'] = $row['name'];
+            $data['phone'] = $row['phone'];
         }
     }
     return $data;
@@ -1336,8 +1338,8 @@ function get_supplier_data($id)
     $result = mysqli_query($con, "SELECT * FROM " . $prefix . "_suppliers WHERE id=" . $id . "");
     if (@mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[id] = $row['id'];
-            $data[name] = $row['name'];
+            $data['id'] = $row['id'];
+            $data['name'] = $row['name'];
         }
     }
     return $data;
@@ -1351,8 +1353,8 @@ function get_expenses_set_data($expenses_id)
     $result = mysqli_query($con, $sql);
     if (@mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[id] = $row['id'];
-            $data[name] = $row['expensestype'];
+            $data['id'] = $row['id'];
+            $data['name'] = $row['expensestype'];
         }
     }
     return $data;

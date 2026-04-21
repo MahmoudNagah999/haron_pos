@@ -90,18 +90,18 @@ if($user_offers!=="1" and $user_IsAdmin!=1){
         $tbl_name="".$prefix."_offers_inv";		//your table name
         // How many adjacent pages should be shown on each side?
         $adjacents = 3;
-         $query = "SELECT COUNT(*) as num  FROM  ".$prefix."_offers_inv where $add_sql $add_sql_UerID $add_sql_doc inv_id!='' and  left(date, 10) BETWEEN '".$from."' AND '".$to."'";
+         $query = "SELECT COUNT(*) as num  FROM  ".$prefix."_offers_inv where (Total + 0) > 0 and $add_sql $add_sql_UerID $add_sql_doc inv_id!='' and  left(date, 10) BETWEEN '".$from."' AND '".$to."'";
         $total_pages = @mysqli_fetch_array(mysqli_query($con,$query));
-        $total_pages = $total_pages[num];
+        $total_pages = $total_pages['num'];
 
         /* Setup vars for query. */
         $targetpage = "?UerID=".$_GET['UerID']."&reports=".$_GET['reports']."&name=".$_GET['name']."&inv=".$_GET['inv']."&from=".$_GET['from']."&to=".$_GET['to']."&limit=".$_GET['limit']."&orderby=".$_GET['orderby']."&type=".$_GET['type'].""; 	//your file name  (the name of this file)
         //how many items to show per page
         if(!empty($_GET['limit'])){
-            $_SESSION[limit]=$_GET['limit'];
+            $_SESSION['limit']=$_GET['limit'];
         }else{}
-        if(!empty($_SESSION[limit])){
-            $limit = $_SESSION[limit];
+        if(!empty($_SESSION['limit'])){
+            $limit = $_SESSION['limit'];
             if($limit>100){$limit=$items_per_page+20;}
         }else{
             $limit = $items_per_page+20;
@@ -111,7 +111,7 @@ if($user_offers!=="1" and $user_IsAdmin!=1){
             $start = ($page - 1) * $limit; 			//first item to display on this page
         else
             $start = 0;								//if no page var is given, set start to 0
-        $sql = "SELECT * FROM ".$prefix."_offers_inv where $add_sql $add_sql_UerID $add_sql_doc  inv_id!='' and left(date,10) BETWEEN '".$from."' AND '".$to."' order by $orderby $type LIMIT $start, $limit";
+        $sql = "SELECT * FROM ".$prefix."_offers_inv where (Total + 0) > 0 and $add_sql $add_sql_UerID $add_sql_doc  inv_id!='' and left(date,10) BETWEEN '".$from."' AND '".$to."' order by $orderby $type LIMIT $start, $limit";
         $result = @mysqli_query($con,$sql);
         /* Setup page vars for display. */
         if ($page == 0) $page = 1;					//if no page var is given, default to 1.
@@ -239,14 +239,14 @@ if($user_offers!=="1" and $user_IsAdmin!=1){
             else{}
 #############################
             if ($Discount_type == 1) {
-                $total_val=$row['Total']-($row['discount']);
+                $total_val=(float)$row['Total']-(float)($row['discount']);
             } else if ($Discount_type == 2) {
-                $total_val=$row['Total']-($row['Total']*$row['discount']/100);
+                $total_val=(float)$row['Total']-((float)$row['Total']*(float)$row['discount']/100);
 
             } else {
-                $total_val=$row['Total']-($row['discount']);
+                $total_val=(float)$row['Total']-(float)($row['discount']);
             }
-            $total_val_after_tax_and_shipping=  $total_val+$row['tax']+$row['shipping'];
+            $total_val_after_tax_and_shipping = (float)$total_val+(float)$row['tax']+(float)$row['shipping'];
             ?>
 
 
@@ -293,20 +293,20 @@ if($user_offers!=="1" and $user_IsAdmin!=1){
         <th colspan="5" class="text-center"><?php echo"$the_total_lang"; ?></th>
         <th class="text-center"> <?php
 
-            $result_get = mysqli_query($con,"SELECT * FROM ".$prefix."_offers_inv where ".$add_sql." ".$add_sql_UerID." ".$add_sql_doc." inv_id!='' and left(date,10) BETWEEN '".$from."' AND '".$to."'");
+            $result_get = mysqli_query($con,"SELECT * FROM ".$prefix."_offers_inv where (Total + 0) > 0 and ".$add_sql." ".$add_sql_UerID." ".$add_sql_doc." inv_id!='' and left(date,10) BETWEEN '".$from."' AND '".$to."'");
             if(mysqli_num_rows($result_get)>0){
                 while($row_get = mysqli_fetch_array($result_get))
                 {
 ###################
                     if ($Discount_type == 1) {
-                        $total_val2=$row_get['Total']-($row_get['discount']);
+                        $total_val2=(float)$row_get['Total']-(float)($row_get['discount']);
                     } else if ($Discount_type == 2) {
-                        $total_val2=$row_get['Total']-($row_get['Total']*$row_get['discount']/100);
+                        $total_val2=(float)$row_get['Total']-((float)$row_get['Total']*(float)$row_get['discount']/100);
 
                     } else {
-                        $total_val2=$row_get['Total']-($row_get['discount']);
+                        $total_val2=(float)$row_get['Total']-(float)($row_get['discount']);
                     }
-                    $total_val_after_tax_and_shipping2+=  $total_val2+$row_get['tax']+$row_get['shipping'];
+                    $total_val_after_tax_and_shipping2+=  (float)$total_val2+(float)$row_get['tax']+(float)$row_get['shipping'];
 #################
                 }
             }

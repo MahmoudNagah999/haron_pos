@@ -76,8 +76,8 @@ $type = $_GET['type'];
                     ?>
                     <?php
 
-                    $checkbox = $_POST['cb']; //from name="checkbox[]"
-                    $countCheck = count($_POST['cb']);
+                    $checkbox = isset($_POST['cb']) ? $_POST['cb'] : []; //from name="checkbox[]"
+                    $countCheck = count($checkbox);
                     if ($countCheck > 0) {
                         if ($demo == 1) {
                             echo '<div class="alert alert-warning text-right">
@@ -323,24 +323,24 @@ $type = $_GET['type'];
                     */
                         $query = "SELECT COUNT(*) as num  FROM  " . $prefix . "_centers order by $orderby $type";
                         $total_pages = @mysqli_fetch_array(mysqli_query($con, $query));
-                        $total_pages = $total_pages[num];
+                        $total_pages = $total_pages['num'];
 
                         /* Setup vars for query. */
                         $targetpage = "?limit=" . $_GET['limit'] . "&orderby=" . $_GET['orderby'] . "&type=" . $_GET['type'] . "";    //your file name  (the name of this file)
                         //how many items to show per page
                         if (!empty($_GET['limit'])) {
-                            $_SESSION[limit] = $_GET['limit'];
+                            $_SESSION['limit'] = $_GET['limit'];
                         } else {
                         }
-                        if (!empty($_SESSION[limit])) {
-                            $limit = $_SESSION[limit];
+                        if (!empty($_SESSION['limit'])) {
+                            $limit = $_SESSION['limit'];
                             if ($limit > 100) {
                                 $limit = $items_per_page + 3;
                             }
                         } else {
                             $limit = $items_per_page + 2;
                         }
-                        $page = $_GET['page'];
+                        $page = (int)$_GET['page'];
                         if ($page)
                             $start = ($page - 1) * $limit;            //first item to display on this page
                         else

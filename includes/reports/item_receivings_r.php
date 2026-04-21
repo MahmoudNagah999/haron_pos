@@ -36,17 +36,17 @@ $to=stripslashes(date('Y-m-d',strtotime($to)));
 	   First get total number of rows in data table. 
 	   If you have a WHERE clause in your query, make sure you mirror it here.
 	*/
-      $query = "SELECT COUNT(DISTINCT(".$prefix."_receivings.id)) as num  FROM  ".$prefix."_receivings  join ".$prefix."_receivings_inv on ".$prefix."_receivings.inv_id = ".$prefix."_receivings_inv.inv_id where ".$prefix."_receivings.item=".$_GET['q']." and ".$prefix."_receivings.inv_id!='' and ".$prefix."_receivings.type='1' and  left(".$prefix."_receivings_inv.date, 10) BETWEEN '$from' AND '$to'";
+      $query = "SELECT COUNT(DISTINCT(".$prefix."_receivings.id)) as num  FROM  ".$prefix."_receivings  join ".$prefix."_receivings_inv on ".$prefix."_receivings.inv_id = ".$prefix."_receivings_inv.inv_id where (".$prefix."_receivings.Total + 0) > 0 and ".$prefix."_receivings.item='".$_GET['q']."' and ".$prefix."_receivings.inv_id!='' and ".$prefix."_receivings.type='1' and  left(".$prefix."_receivings_inv.date, 10) BETWEEN '$from' AND '$to'";
 	$total_pages = @mysqli_fetch_array(mysqli_query($con,$query));
-	$total_pages = $total_pages[num];
+	$total_pages = $total_pages['num'];
 	/* Setup vars for query. */
 	$targetpage = "?q=".$_GET['q']."&from=".$_GET['from']."&to=".$_GET['to']."&limit=".$_GET['limit']."&orderby=".$_GET['orderby']."&type=".$_GET['type']."&reports=item_receivings"; 	//your file name  (the name of this file)
 	 								//how many items to show per page
 										if(!empty($_GET['limit'])){
-		$_SESSION[limit]=$_GET['limit'];
+		$_SESSION['limit']=$_GET['limit'];
 		}else{}
-		if(!empty($_SESSION[limit])){
-					$limit = $_SESSION[limit];
+		if(!empty($_SESSION['limit'])){
+					$limit = $_SESSION['limit'];
 					if($limit>100){$limit=$items_per_page+20;}
 			}else{
 				$limit = $items_per_page+20;
@@ -58,7 +58,7 @@ $to=stripslashes(date('Y-m-d',strtotime($to)));
 	else
 		$start = 0;								//if no page var is given, set start to 0
 
-     $sql = "SELECT DISTINCT(".$prefix."_receivings.id ) ,  ".$prefix."_receivings.*  FROM  ".$prefix."_receivings  Join ".$prefix."_receivings_inv on ".$prefix."_receivings.inv_id = ".$prefix."_receivings_inv.inv_id where ".$prefix."_receivings.item=".$_GET['q']." and ".$prefix."_receivings.inv_id!='' and ".$prefix."_receivings.type='1' and  left(".$prefix."_receivings_inv.date, 10) BETWEEN '$from' AND '$to' order by date DESC LIMIT $start, $limit";
+     $sql = "SELECT DISTINCT(".$prefix."_receivings.id ) ,  ".$prefix."_receivings.*  FROM  ".$prefix."_receivings  Join ".$prefix."_receivings_inv on ".$prefix."_receivings.inv_id = ".$prefix."_receivings_inv.inv_id where (".$prefix."_receivings.Total + 0) > 0 and ".$prefix."_receivings.item='".$_GET['q']."' and ".$prefix."_receivings.inv_id!='' and ".$prefix."_receivings.type='1' and  left(".$prefix."_receivings_inv.date, 10) BETWEEN '$from' AND '$to' order by date DESC LIMIT $start, $limit";
 
 //}
 
@@ -162,8 +162,8 @@ while($row = @mysqli_fetch_array($result))
 				$class="background_color_FFF";
 				}else{$class='background_color_D5EFF0';}
 //				if($row['supplier']==""){$supplier_name="";}else{
-                    $supplier_name=get_supplier_data((get_receivings_inv_data($row['inv_id'] , 1)[supplier]))[name];
-                    $date=((get_receivings_inv_data($row['inv_id'] , 1)[date]));
+                    $supplier_name=get_supplier_data((get_receivings_inv_data($row['inv_id'] , 1)['supplier']))['name'];
+                    $date=((get_receivings_inv_data($row['inv_id'] , 1)['date']));
                     //				}
 				################
 		$result_search_itemsid = mysqli_query($con,"SELECT item FROM items WHERE id='".$row['item']."'");
@@ -193,7 +193,7 @@ while($row_search_itemsid = mysqli_fetch_array($result_search_itemsid))
     <th colspan="7" class="text-center"><?php echo"$the_total_lang"; ?></th>
     <th class="text-center"> <?php
   
-$result_get = mysqli_query($con,"SELECT Total FROM ".$prefix."_receivings where item=".$_GET['q']." and type='1' and left(date,10) BETWEEN '".$from."' AND '".$to."'");
+$result_get = mysqli_query($con,"SELECT Total FROM ".$prefix."_receivings where (Total + 0) > 0 and item='".$_GET['q']."' and type='1' and left(date,10) BETWEEN '".$from."' AND '".$to."'");
 if(@mysqli_num_rows($result_get)>0){
 while($row_get = mysqli_fetch_array($result_get))
   {

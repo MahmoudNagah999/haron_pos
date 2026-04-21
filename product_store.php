@@ -160,19 +160,19 @@ if (isset($_POST['item'])){
                                  */
                                 $query = "SELECT COUNT(*) as num  FROM  " . $prefix . "_store where id != ''  order by id DESC";
                                 $total_pages = @mysqli_fetch_array(mysqli_query($con, $query));
-                                $total_pages = $total_pages[num];
+                                $total_pages = $total_pages['num'];
 
                                 /* Setup vars for query. */
                                 $targetpage = "limit=" . $_GET['limit'] . "";
                                 //your file name  (the name of this file)
                                 //how many items to show per page
                                 if (!empty($_GET['limit'])) {
-                                    $_SESSION[limit] = $_GET['limit'];
+                                    $_SESSION['limit'] = $_GET['limit'];
                                 } else {
 
                                 }
-                                if (!empty($_SESSION[limit])) {
-                                    $limit = $_SESSION[limit];
+                                if (!empty($_SESSION['limit'])) {
+                                    $limit = $_SESSION['limit'];
                                     if ($limit > 100) {
                                         $limit = 20;
                                     }

@@ -923,18 +923,18 @@ VALUES ('" . $groups . "','" . $items . "','" . $date . "','" . $Quantity . "','
                     $query = "SELECT COUNT(*) as num  FROM  items where id NOT IN(".get_hide_items().") and  id='$search'  and groupid='" . $_GET['groups'] . "'  order by $orderby $type";
                 }
                 $total_pages = @mysqli_fetch_array(mysqli_query($con, $query));
-                $total_pages = $total_pages[num];
+                $total_pages = $total_pages['num'];
 
                 /* Setup vars for query. */
                 $targetpage = "?companies=" . $_GET['companies'] . "&Quanstatus=" . $_GET['Quanstatus']. "&groups=" . $_GET['groups']. "&store_id=" . $_GET['store_id'] . "&date_to=" . $_GET['date_to']. "&date_from=" . $_GET['date_from']. "&search=" . $_GET['search'] . "&limit=" . $_GET['limit'] . "&orderby=" . $_GET['orderby'] . "&type=" . $_GET['type'] . "";  //your file name  (the name of this file)
                 //how many items to show per page
                 if (!empty($_GET['limit'])) {
-                    $_SESSION[limit] = $_GET['limit'];
+                    $_SESSION['limit'] = $_GET['limit'];
                 } else {
 
                 }
-                if (!empty($_SESSION[limit])) {
-                    $limit = $_SESSION[limit];
+                if (!empty($_SESSION['limit'])) {
+                    $limit = $_SESSION['limit'];
                 } else {
                     $limit = 300;
                 }

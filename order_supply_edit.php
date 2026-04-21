@@ -2,7 +2,7 @@
 include "includes/inc.php";
 $inv_id=$_GET['id'];
 $data=get_order_supply_data($inv_id,1);
-if($data[id]==null){
+if($data['id']==null){
      header("refresh:0;url=index.php");
     die();}
 ########################
@@ -152,13 +152,13 @@ if (isset($_GET['cat_show'])) {
                                       
                                         while ($row_upt = mysqli_fetch_array($result_upt)) {
                                             //echo $row_up['id'];
-                                            $quantityt = $_POST[quantity . $row_upt['id']];
-                                            $Pricet = $_POST[price . $row_upt['id']];
-                                            $stafft = $_POST[staff . $row_upt['id']];
-                                            $Discountt = $_POST[discount . $row_upt['id']];
-                                            $order_supply_type = $_POST[order_supply_type . $row_upt['id']];
-                                            $size = $_POST[size . $row_upt['id']];
-                                            $color = $_POST[color . $row_upt['id']];
+                                            $quantityt = $_POST['quantity'][$row_upt['id']];
+                                            $Pricet = $_POST['price'][$row_upt['id']];
+                                            $stafft = $_POST['staff'][$row_upt['id']];
+                                            $Discountt = $_POST['discount'][$row_upt['id']];
+                                            $order_supply_type = $_POST['order_supply_type'][$row_upt['id']];
+                                            $size = $_POST['size'][$row_upt['id']];
+                                            $color = $_POST['color'][$row_upt['id']];
                                             if ($Discount_type == 1) {
                                                 $DiscountValuet = $Discountt;
                                             } else if ($Discount_type == 2) {
@@ -196,12 +196,12 @@ if (isset($_GET['cat_show'])) {
                                             $result_up = mysqli_query($con, "SELECT * FROM " . $prefix . "_order_supply where inv_id='$inv_id' order by id DESC");
                                             while ($row_up = mysqli_fetch_array($result_up)) {
                                                 //echo $row_up['id'];
-                                                $item = round($_POST[item . $row_up['id']]);
-                                                $quantity = $_POST[quantity . $row_up['id']];
-                                                $Price = $_POST[price . $row_up['id']];
-                                                $staff = $_POST[staff . $row_up['id']];
-                                                $Discount = $_POST[discount . $row_up['id']];
-                                                $order_supply_type = $_POST[order_supply_type . $row_up['id']];
+                                                $item = round((float)$_POST['item'][$row_up['id']]);
+                                                $quantity = $_POST['quantity'][$row_up['id']];
+                                                $Price = $_POST['price'][$row_up['id']];
+                                                $staff = $_POST['staff'][$row_up['id']];
+                                                $Discount = $_POST['discount'][$row_up['id']];
+                                                $order_supply_type = $_POST['order_supply_type'][$row_up['id']];
                                                 if ($Retail_allow == 1) {
                                                     
                                                 } else {
@@ -329,15 +329,15 @@ $date_edit= Trim(date('Y-m-d', strtotime($date_edita)));
                                         $result_up = mysqli_query($con, "SELECT * FROM " . $prefix . "_order_supply where inv_id='$inv_id' order by id DESC");
                                         while ($row_up = mysqli_fetch_array($result_up)) {
                                             //echo $row_up['id'];
-                                            $item = $_POST[item][$row_up['id']];
-                                           $quantity = $_POST[quantity][$row_up['id']]; 
-                                            $Price = $_POST[price][$row_up['id']];
-                                            $staff = $_POST[staff];
-                                            $Discount = $_POST[discount][$row_up['id']];                                          
-                                            $BuyPrice = $_POST[BuyPrice][$row_up['id']];
-                                            $order_supply_type = $_POST[order_supply_type][$row_up['id']];
-                                            $size = $_POST[size][$row_up['id']];
-                                            $color = $_POST[color][$row_up['id']];
+                                            $item = $_POST['item'][$row_up['id']];
+                                           $quantity = $_POST['quantity'][$row_up['id']]; 
+                                            $Price = $_POST['price'][$row_up['id']];
+                                            $staff = $_POST['staff'];
+                                            $Discount = $_POST['discount'][$row_up['id']];                                          
+                                            $BuyPrice = $_POST['BuyPrice'][$row_up['id']];
+                                            $order_supply_type = $_POST['order_supply_type'][$row_up['id']];
+                                            $size = $_POST['size'][$row_up['id']];
+                                            $color = $_POST['color'][$row_up['id']];
                                             if ($Discount_type == 1) {
                                                 $DiscountValue = $Discount;
                                             } else if ($Discount_type == 2) {
@@ -718,19 +718,19 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                                                  */
                                                 $query = "SELECT COUNT(*) as num  FROM  " . $prefix . "_order_supply where inv_id='$inv_id' order by id DESC";
                                                 $total_pages = @mysqli_fetch_array(mysqli_query($con, $query));
-                                                $total_pages = $total_pages[num];
+                                                $total_pages = $total_pages['num'];
 
                                                 /* Setup vars for query. */
                                                 $targetpage = "limit=" . $_GET['limit'] . "";
                                                 //your file name  (the name of this file)
                                                 //how many items to show per page
                                                 if (!empty($_GET['limit'])) {
-                                                    $_SESSION[limit] = $_GET['limit'];
+                                                    $_SESSION['limit'] = $_GET['limit'];
                                                 } else {
 
                                                 }
-                                                if (!empty($_SESSION[limit])) {
-                                                    $limit = $_SESSION[limit];
+                                                if (!empty($_SESSION['limit'])) {
+                                                    $limit = $_SESSION['limit'];
                                                     if ($limit > 100) {
                                                         $limit = 20;
                                                     }
@@ -964,27 +964,31 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
      echo'<tr>';
     if (isset($_POST['alldiscount'])){
         if($Discount_type==2){
-            $print_total_disc=$sumTotal*$_POST['alldiscount']/100;
+            $print_total_disc=(float)$sumTotal*(float)$_POST['alldiscount']/100;
         }
         else if($Discount_type==1){
-            $print_total_disc=$_POST['alldiscount'];
-        }else{}
+            $print_total_disc=(float)$_POST['alldiscount'];
+        }else{
+            $print_total_disc = 0;
+        }
     }else{
-        $print_total_disc = $data['discount'];
+        $print_total_disc = (float)$data['discount'];
     }
+    $shipping_val = (float)$data['shipping'];
+    $sumTotal_val = (float)$sumTotal;
                                  echo'<td colspan="4">م.النقل</td>';
-                            echo'<td><font style="color:#060; font-weight:bold;">' . $data[shipping] . '</font></td>
+                            echo'<td><font style="color:#060; font-weight:bold;">' . $data['shipping'] . '</font></td>
                             <td></td>
                             </tr>';
                               echo'<tr><td  colspan="4">الاجمالى بعد م.النقل</td>
-                            <td><font style="color:#060; font-weight:bold;">'.(($sumTotal-$print_total_disc)+$data[shipping]).'</font></td><td></td>
+                            <td><font style="color:#060; font-weight:bold;">'.(($sumTotal_val-$print_total_disc)+$shipping_val).'</font></td><td></td>
                             </tr>';
 //                              echo'<tr><td  colspan="5">الاجمالى بعد م.النقل</td>
-//                            <td><font style="color:#060; font-weight:bold;">'.((($sumTotal-$print_total_disc)*$db_tax/100)+($sumTotal-$print_total_disc)+$data[shipping]).'</font></td><td></td>
+//                            <td><font style="color:#060; font-weight:bold;">'.((($sumTotal_val-$print_total_disc)*(float)$db_tax/100)+($sumTotal_val-$print_total_disc)+$shipping_val).'</font></td><td></td>
 //                            </tr>';
 //
                               #############################################
-     mysqli_query($con, "UPDATE " . $prefix . "_order_supply_inv SET Total='" . $sumTotal . "',tax='" . (($sumTotal-$print_total_disc)*$db_tax/100) . "'  where inv_id='" . $inv_id . "' and type='1'");
+     mysqli_query($con, "UPDATE " . $prefix . "_order_supply_inv SET Total='" . $sumTotal_val . "',tax='" . (($sumTotal_val-$print_total_disc)*(float)$db_tax/100) . "'  where inv_id='" . $inv_id . "' and type='1'");
 
                               ##############################################
     ?>
@@ -998,7 +1002,7 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                            
 
                                         <td style="font-size:16px;" class="text-center">التــاريخ</td>
-                                        <td><input type="text" name="date" id="date" value="<?php echo date("d/m/Y",strtotime($data[date])); ?>"  style="text-align:center; background-color:#CCC; width:80px; height:20px;"/>
+                                        <td><input type="text" name="date" id="date" value="<?php echo date("d/m/Y",strtotime($data['date'])); ?>"  style="text-align:center; background-color:#CCC; width:80px; height:20px;"/>
                                             <script type="text/javascript">
                                                 $('#date').dateEntry({dateFormat: 'dmy/', spinnerImage: ''});
                                             </script>
@@ -1087,7 +1091,7 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                                         <div style="width:100%; margin:0 auto; text-align:center; float:right; text-align:center;">
 
                                             <?php
-                                            $result_cat = mysqli_query($con, "SELECT * FROM products where rank!='0' and rank!='' and id>0  order by rank ASC");
+                                            $result_cat = mysqli_query($con, "SELECT * FROM products where `rank`!='0' and `rank`!='' and id>0  order by `rank` ASC");
                                             if (@mysqli_num_rows($result_cat) >= 1) {
                                                 while ($row_cat = mysqli_fetch_array($result_cat)) {
                                                     if ($row_cat['id'] == $db_cat_items_show) {
@@ -1134,19 +1138,19 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                                         $query = "SELECT COUNT(*) as num  FROM  items  where OrderNo!='0' and OrderNo!='' and groupid=" . $db_cat_items_show . " order by OrderNo ASC";
                                   //  }
                                     $total_pages = @mysqli_fetch_array(mysqli_query($con, $query));
-                                    $total_pages = $total_pages[num];
+                                    $total_pages = $total_pages['num'];
 
                                     /* Setup vars for query. */
                                     $targetpage = "limit=" . $_GET['limit'] . "";
                                     //your file name  (the name of this file)
                                     //how many items to show per page
                                     if (!empty($_GET['limit'])) {
-                                        $_SESSION[limit] = $_GET['limit'];
+                                        $_SESSION['limit'] = $_GET['limit'];
                                     } else {
                                         
                                     }
-                                    if (!empty($_SESSION[limit])) {
-                                        $limit = $_SESSION[limit];
+                                    if (!empty($_SESSION['limit'])) {
+                                        $limit = $_SESSION['limit'];
                                         if ($limit > 100) {
                                             $limit = 20;
                                         }

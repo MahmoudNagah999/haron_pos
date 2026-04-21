@@ -1,35 +1,30 @@
 <?php
 include "includes/inc.php";
-$status=$_GET['status'];
-$branch=$_GET['branch'];
-$region=$_GET['region'];
-if(count($region)==1 && $region[0]=='1000000000'){
-  $skip_region=1;
-}else{
-  $skip_region=0;
+$status = (array)$_GET['status'];
+$branch = (array)$_GET['branch'];
+$region = (array)$_GET['region'];
+if (is_array($region) && count($region) == 1 && $region[0] == '1000000000') {
+    $skip_region = 1;
+} else {
+    $skip_region = 0;
 }
 
-//echo $status[0];
-if(count($status)==1 && $status[0]=='1000000000'){
-  $skip_status=1;
-}else{
- $skip_status=0;
+if (is_array($status) && count($status) == 1 && $status[0] == '1000000000') {
+    $skip_status = 1;
+} else {
+    $skip_status = 0;
 }
-if(count($branch)==1 && $branch[0]=='1000000000'){
-  $skip_branch=1;
-}else{
- $skip_branch=0;
+if (is_array($branch) && count($branch) == 1 && $branch[0] == '1000000000') {
+    $skip_branch = 1;
+} else {
+    $skip_branch = 0;
 }
-$date_from=stripslashes(date('Y-m-d',strtotime($_GET['date_from'])));
-$date_to=stripslashes(date('Y-m-d',strtotime($_GET['date_to'])));
-function get_all_orders_count(){
-  global $con;
-global $prefix;
-global $status;
-global $date_from;
-global $date_to;
-global $skip_region;
-global $skip_status;
+$date_from = stripslashes(date('Y-m-d', strtotime($_GET['date_from'] ?? '')));
+$date_to = stripslashes(date('Y-m-d', strtotime($_GET['date_to'] ?? '')));
+function get_all_orders_count()
+{
+    global $con, $prefix, $status, $date_from, $date_to, $skip_region, $skip_status, $region, $branch, $skip_branch;
+    $q_status = $q_region = $q_branch = $sql_date = "";
 
 if(empty($status) || $skip_status==1){
 }else{
@@ -68,13 +63,10 @@ return $data;
 echo $skip_status;
 }
 
-function get_all_orders_count_not_know(){
-  global $con;
-global $prefix;
-global $date_from;
-global $date_to;
-global $status;
-global $skip_status;
+function get_all_orders_count_not_know()
+{
+    global $con, $prefix, $date_from, $date_to, $status, $skip_status, $branch, $skip_branch;
+    $q_status = $q_region = $q_branch = $sql_date = "";
 
 if(empty($status) || $skip_status==1){
 }else{
@@ -94,7 +86,7 @@ $q_branch=" and  branch_id in ($arr_branch)";
 if($date_to=="1970-01-01" || $date_to=="0000-01-01" || $date_to==null or $date_to==""){}else{
   $sql_date=" and left(date,10) BETWEEN '$date_from' AND '$date_to'";
   }
-$result_order_supply_status = @mysqli_query($con, "SELECT status,COUNT(*) as counts,date FROM " . $prefix . "_order_supply_inv where region_id=0 $q_status $q_branch  $sql_date GROUP BY status");
+    $result_order_supply_status = @mysqli_query($con, "SELECT status,COUNT(*) as counts FROM " . $prefix . "_order_supply_inv where region_id=0 $q_status $q_branch  $sql_date GROUP BY status");
 $num_order_supply_status = @mysqli_num_rows($result_order_supply_status);
 if ($num_order_supply_status > 0) {
   while ($row_order_supply_status = mysqli_fetch_array($result_order_supply_status)) {
@@ -107,10 +99,10 @@ return $data;
 $orders_total_value_status=get_all_orders_count();
 $sumArray = array();
 
-foreach ($orders_total_value_status as $k=>$subArray) {
-  foreach ($subArray as $id=>$value) {
-    $sumArray[$id]+=$value;
-  }
+foreach ($orders_total_value_status as $k => $subArray) {
+    foreach ($subArray as $id => $value) {
+        $sumArray[$id] = ($sumArray[$id] ?? 0) + $value;
+    }
 }
 
 
@@ -124,12 +116,13 @@ function get_all_oprders_status(){
     global $status;
     global $skip_status;
   
-    if(empty($status) || $skip_status==1){
-    }else{
-    $arr=implode (", ", $status);
-    if($arr==''){}else{
-   echo  $q="where id in ($arr)";
-    }
+    if (empty($status) || $skip_status == 1) {
+    } else {
+        $arr = implode(", ", $status);
+        if ($arr == '') {
+        } else {
+            $q = "where id in ($arr)";
+        }
     }
     $result_order_supply_status = @mysqli_query($con, "SELECT * FROM " . $prefix . "_order_supply_status $q");
     $num_order_supply_status = @mysqli_num_rows($result_order_supply_status);
@@ -198,13 +191,13 @@ $Total_final= array_sum($sumArray);
   </div>
  <div class="form-group mb-2">
   <select name="status[]" class="form-control js-example-basic-multiple-limit" multiple>
-  <option value="1000000000"  <?php if($_GET['status']==null || in_array("1000000000", $_GET['status'])){echo "selected";} ?>>اختر الحالة</option>
+  <option value="1000000000"  <?php if(empty($status) || in_array("1000000000", $status)){echo "selected";} ?>>اختر الحالة</option>
       <?php
       $result_search = mysqli_query($con,"SELECT id,name FROM cairo_order_supply_status order by id ASC");
 if(@mysqli_num_rows($result_search)>0){
 while($row_search= mysqli_fetch_array($result_search))
   {
-      if(in_array($row_search['id'], $_GET['status'])) {
+      if(in_array($row_search['id'], $status)) {
       echo' <option value="'.$row_search['id'].'" selected>'.$row_search['name'].'</option>';
     }else{
 echo' <option value="'.$row_search['id'].'">'.$row_search['name'].'</option>';
@@ -225,7 +218,7 @@ echo' <option value="'.$row_search['id'].'">'.$row_search['name'].'</option>';
 if(@mysqli_num_rows($result_search_branch)>0){
 while($row_search_branch= mysqli_fetch_array($result_search_branch))
   {
-      if(in_array($row_search_branch['id'], $_GET['branch'])) {
+      if(in_array($row_search_branch['id'], $branch)) {
 echo' <option value="'.$row_search_branch['id'].'"  selected>'.$row_search_branch['name'].'</option>';
     }else{
       echo' <option value="'.$row_search_branch['id'].'">'.$row_search_branch['name'].'</option>';
@@ -239,13 +232,13 @@ echo' <option value="'.$row_search_branch['id'].'"  selected>'.$row_search_branc
   </div>
  <div class="form-group mb-2">
   <select name="region[]" class="form-control js-example-basic-multiple-limit" multiple>
-      <option  value="1000000000"  <?php if($_GET['region']==null || in_array("1000000000", $_GET['region'])){echo "selected";} ?>>المنطقة</option>
+      <option  value="1000000000"  <?php if(empty($region) || in_array("1000000000", $region)){echo "selected";} ?>>المنطقة</option>
       <?php
       $result_search_region= mysqli_query($con,"SELECT id,name FROM cairo_region order by name ASC");
 if(@mysqli_num_rows($result_search_region)>0){
 while($row_search_region= mysqli_fetch_array($result_search_region))
   {
-    if(in_array($row_search_region['id'], $_GET['region'])) {
+    if(in_array($row_search_region['id'], $region)) {
 echo' <option value="'.$row_search_region['id'].'"  selected>'.$row_search_region['name'].'</option>';
     }else{
       echo' <option value="'.$row_search_region['id'].'">'.$row_search_region['name'].'</option>';
@@ -322,14 +315,17 @@ echo'<tr '.$bgcolor.'>';
 echo'<td>'.$row['name'].'</td>';
 
 
-foreach($get_all_oprders_status['id'] as $value){
-  $sum_status[$value] +=$orders_total_value_status[$row['id']][$value];
-  echo'<td>'.$orders_total_value_status[$row['id']][$value].'</td>';
-}
-$xyz=array_sum($orders_total_value_status[$row['id']]);
+                foreach ($get_all_oprders_status['id'] as $value) {
+                    $raw_val = (int)$orders_total_value_status[$row['id']][$value];
+                    $sum_status[$value] = ($sum_status[$value] ?? 0) + $raw_val;
+                    echo '<td>' . $raw_val . '</td>';
+                }
+                $xyz = array_sum((array)($orders_total_value_status[$row['id']] ?? []));
 echo'<td>'.$xyz.'</td>';
-$total_rate +=(($xyz/$Total_final)*100);
-echo'<td>'.round((($xyz/$Total_final)*100),2).'</td>';
+                if ($Total_final > 0) {
+                    $total_rate += (($xyz / $Total_final) * 100);
+                }
+                echo '<td>' . ($Total_final > 0 ? round((($xyz / $Total_final) * 100), 2) : 0) . '</td>';
 
 
 echo'</tr>';
@@ -349,13 +345,17 @@ echo'</tr>';
     echo'<tr class="'.$class.'">';
 echo'<td>غير معروفة</td>';
 
-foreach($get_all_oprders_status['id'] as $value){
-  $sum_status_not_know +=$get_all_orders_count_not_know[$value];
-  echo'<td>'.$get_all_orders_count_not_know[$value].'</td>';
-}
-echo'<td>'.$sum_status_not_know .'</td>';
-echo'<td>'.round((($sum_status_not_know/$Total_final)*100),2).'</td>';
-$total_rate +=(($sum_status_not_know/$Total_final)*100);
+                $sum_status_not_know = 0;
+                foreach ($get_all_oprders_status['id'] as $value) {
+                    $raw_val_not_know = (int)$get_all_orders_count_not_know[$value];
+                    $sum_status_not_know += $raw_val_not_know;
+                    echo '<td>' . $raw_val_not_know . '</td>';
+                }
+                echo '<td>' . $sum_status_not_know . '</td>';
+                echo '<td>' . ($Total_final > 0 ? round((($sum_status_not_know / $Total_final) * 100), 2) : 0) . '</td>';
+                if ($Total_final > 0) {
+                    $total_rate += (($sum_status_not_know / $Total_final) * 100);
+                }
 
 echo'</tr>';
 }
@@ -363,9 +363,10 @@ echo'</tr>';
     echo'<td>اجمالي</td>';
     
   
-    foreach($get_all_oprders_status['id'] as $value){
-      echo'<td>'.($sum_status[$value]+$get_all_orders_count_not_know[$value]).'</td>';
-    }
+                foreach ($get_all_oprders_status['id'] as $value) {
+                    $current_sum = ($sum_status[$value] ?? 0) + (int)$get_all_orders_count_not_know[$value];
+                    echo '<td>' . $current_sum . '</td>';
+                }
    
     echo'<td >'.$Total_final.'</td>';
     echo'<td>'.round($total_rate,0).'</td>';

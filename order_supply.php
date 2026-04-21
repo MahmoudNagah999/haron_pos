@@ -722,19 +722,19 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                                                  */
                                                 $query = "SELECT COUNT(*) as num  FROM  " . $prefix . "_order_supply_temporary where user_id='$user_id' order by id DESC";
                                                 $total_pages = @mysqli_fetch_array(mysqli_query($con, $query));
-                                                $total_pages = $total_pages[num];
+                                                $total_pages = $total_pages['num'];
 
                                                 /* Setup vars for query. */
                                                 $targetpage = "limit=" . $_GET['limit'] . "";
                                                 //your file name  (the name of this file)
                                                 //how many items to show per page
                                                 if (!empty($_GET['limit'])) {
-                                                    $_SESSION[limit] = $_GET['limit'];
+                                                    $_SESSION['limit'] = $_GET['limit'];
                                                 } else {
 
                                                 }
-                                                if (!empty($_SESSION[limit])) {
-                                                    $limit = $_SESSION[limit];
+                                                if (!empty($_SESSION['limit'])) {
+                                                    $limit = $_SESSION['limit'];
                                                     if ($limit > 100) {
                                                         $limit = 20;
                                                     }
@@ -1206,19 +1206,19 @@ echo'<option value="'.$row_staff['id'].'" '.$select.'>'.$row_staff['name'].'</op
                                         $query = "SELECT COUNT(*) as num  FROM  items  where OrderNo !='0' and OrderNo!='' and groupid=" . $db_cat_items_show . " order by OrderNo ASC";
                                   //  }
                                     $total_pages = @mysqli_fetch_array(mysqli_query($con, $query));
-                                    $total_pages = $total_pages[num];
+                                    $total_pages = $total_pages['num'];
 
                                     /* Setup vars for query. */
                                     $targetpage = "limit=" . $_GET['limit'] . "";
                                     //your file name  (the name of this file)
                                     //how many items to show per page
                                     if (!empty($_GET['limit'])) {
-                                        $_SESSION[limit] = $_GET['limit'];
+                                        $_SESSION['limit'] = $_GET['limit'];
                                     } else {
 
                                     }
-                                    if (!empty($_SESSION[limit])) {
-                                        $limit = $_SESSION[limit];
+                                    if (!empty($_SESSION['limit'])) {
+                                        $limit = $_SESSION['limit'];
                                         if ($limit > 100) {
                                             $limit = 20;
                                         }

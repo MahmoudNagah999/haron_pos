@@ -44,18 +44,18 @@ $to=stripslashes(date('Y-m-d',strtotime($to)));
 	   First get total number of rows in data table. 
 	   If you have a WHERE clause in your query, make sure you mirror it here.
 	*/
-	$query = "SELECT COUNT(*) as num  FROM  ".$prefix."_receivings_inv  where supplier='".$_GET['SupplierID']."' and type='3' and left(date, 10) BETWEEN '$from' AND '$to'";
+	$query = "SELECT COUNT(*) as num  FROM  ".$prefix."_receivings_inv  where (Total + 0) > 0 and supplier='".$_GET['SupplierID']."' and type='3' and left(date, 10) BETWEEN '$from' AND '$to'";
 	$total_pages = @mysqli_fetch_array(mysqli_query($con,$query));
-	$total_pages = $total_pages[num];
+	$total_pages = $total_pages['num'];
 		
 	/* Setup vars for query. */
 	$targetpage = "?from=".$_GET['from']."&to=".$_GET['to']."&limit=".$_GET['limit']."&orderby=".$_GET['orderby']."&type=".$_GET['type']."&reports=payments_suppliers"; 	//your file name  (the name of this file)
 	 								//how many items to show per page
 										if(!empty($_GET['limit'])){
-		$_SESSION[limit]=$_GET['limit'];
+		$_SESSION['limit']=$_GET['limit'];
 		}else{}
-		if(!empty($_SESSION[limit])){
-					$limit = $_SESSION[limit];
+		if(!empty($_SESSION['limit'])){
+					$limit = $_SESSION['limit'];
 					if($limit>100){$limit=$items_per_page+20;}
 			}else{
 				$limit = $items_per_page+20;
@@ -65,7 +65,7 @@ $to=stripslashes(date('Y-m-d',strtotime($to)));
 		$start = ($page - 1) * $limit; 			//first item to display on this page
 	else
 		$start = 0;								//if no page var is given, set start to 0
-$sql = "SELECT * FROM ".$prefix."_receivings_inv where supplier='".$_GET['SupplierID']."' and type='3' and left(date,10) BETWEEN '$from' AND '$to' order by $orderby $type LIMIT $start, $limit";	
+$sql = "SELECT * FROM ".$prefix."_receivings_inv where (Total + 0) > 0 and supplier='".$_GET['SupplierID']."' and type='3' and left(date,10) BETWEEN '$from' AND '$to' order by $orderby $type LIMIT $start, $limit";	
 
 	$result = @mysqli_query($con,$sql);
 		/* Setup page vars for display. */
@@ -200,7 +200,7 @@ if($row['DueDate']=="1970-01-01"){$row['DueDate']="";}
     <thead style="background-color:#CCC;">
     <th colspan="2" class="text-center"><?php echo"$the_total_lang"; ?></th>
     <th class="text-center"> <?php
-$result_getreceivings_inv=mysqli_query($con,"SELECT SUM(Total) as Total FROM ".$prefix."_receivings_inv where type=3 and supplier='".$_GET['SupplierID']."' and left(date,10) BETWEEN '".$from."' AND '".$to."'");
+$result_getreceivings_inv=mysqli_query($con,"SELECT SUM(Total) as Total FROM ".$prefix."_receivings_inv where (Total + 0) > 0 and type=3 and supplier='".$_GET['SupplierID']."' and left(date,10) BETWEEN '".$from."' AND '".$to."'");
 $row_getreceivings_inv=@mysqli_fetch_assoc($result_getreceivings_inv); 
 print $totalreceivings_inv=$row_getreceivings_inv['Total'];
  ?></th>

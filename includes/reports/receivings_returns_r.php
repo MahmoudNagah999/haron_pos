@@ -67,18 +67,19 @@ $to=stripslashes(date('Y-m-d',strtotime($to)));
 	   First get total number of rows in data table. 
 	   If you have a WHERE clause in your query, make sure you mirror it here.
 	*/
-	$query = "SELECT COUNT(*) as num  FROM  ".$prefix."_receivings_inv where  where Total<0 and type='2' and type !='3' and  left(date, 10) BETWEEN '".$from."' AND '".$to."'";
-	$total_pages = @mysqli_fetch_array(mysqli_query($con,$query));
-	$total_pages = $total_pages[num];
+	$query = "SELECT COUNT(*) as num FROM " . $prefix . "_receivings_inv WHERE Total>0 and type='2' and type !='3' and LEFT(date, 10) BETWEEN '" . $from . "' AND '" . $to . "'";
+	$result_total = mysqli_query($con, $query);
+	$row_total = mysqli_fetch_array($result_total);
+	$total_pages = $row_total['num'] ?? 0;
 		
 	/* Setup vars for query. */
 	$targetpage = "?from=".$_GET['from']."&to=".$_GET['to']."&limit=".$_GET['limit']."&orderby=".$_GET['orderby']."&type=".$_GET['type']."&reports=receivings_returns"; 	//your file name  (the name of this file)
 	 								//how many items to show per page
 										if(!empty($_GET['limit'])){
-		$_SESSION[limit]=$_GET['limit'];
+		$_SESSION['limit']=$_GET['limit'];
 		}else{}
-		if(!empty($_SESSION[limit])){
-					$limit = $_SESSION[limit];
+		if(!empty($_SESSION['limit'])){
+					$limit = $_SESSION['limit'];
 					if($limit>100){$limit=$items_per_page+20;}
 			}else{
 				$limit = $items_per_page+20;
@@ -89,7 +90,7 @@ $to=stripslashes(date('Y-m-d',strtotime($to)));
 	else
 		$start = 0;								//if no page var is given, set start to 0
 
-$sql = "SELECT * FROM ".$prefix."_receivings_inv where Total<0 and  type='2' and type !='3' and left(date,10) BETWEEN '".$from."' AND '".$to."' order by $orderby $type LIMIT $start, $limit";	
+$sql = "SELECT * FROM ".$prefix."_receivings_inv where Total>0 and  type='2' and type !='3' and left(date,10) BETWEEN '".$from."' AND '".$to."' order by $orderby $type LIMIT $start, $limit";	
 	$result = @mysqli_query($con,$sql);
 		/* Setup page vars for display. */
 	if ($page == 0) $page = 1;					//if no page var is given, default to 1.
@@ -226,7 +227,7 @@ else{}
     <th colspan="3" class="text-center"><?php echo"$the_total_lang"; ?></th>
   <th class="text-center"> <?php
   
-$result_get = mysqli_query($con,"SELECT Total FROM ".$prefix."_receivings_inv where  Total<0  and type='2' and type !='3' and left(date,10) BETWEEN '".$from."' AND '".$to."'");
+$result_get = mysqli_query($con,"SELECT Total FROM ".$prefix."_receivings_inv where  Total>0  and type='2' and type !='3' and left(date,10) BETWEEN '".$from."' AND '".$to."'");
 if(mysqli_num_rows($result_get)>0){
 while($row_get = mysqli_fetch_array($result_get))
   {

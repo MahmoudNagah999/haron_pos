@@ -28,18 +28,18 @@ $to=stripslashes(date('Y-m-d',strtotime($to)));
 	$tbl_name="sales";		//your table name
 	// How many adjacent pages should be shown on each side?
 	$adjacents = 3;
-	$query = "SELECT COUNT(*) as num  FROM  ".$prefix."_sales where item=".$_GET['q']." and type='1' and  left(date, 10) BETWEEN '$from' AND '$to'";
+	$query = "SELECT COUNT(*) as num  FROM  ".$prefix."_sales where (Total + 0) > 0 and item='".$_GET['q']."' and type='1' and  left(date, 10) BETWEEN '$from' AND '$to'";
 	$total_pages = @mysqli_fetch_array(mysqli_query($con,$query));
-	$total_pages = $total_pages[num];
+	$total_pages = $total_pages['num'];
 		
 	/* Setup vars for query. */
 	$targetpage = "?q=".$_GET['q']."&from=".$_GET['from']."&to=".$_GET['to']."&limit=".$_GET['limit']."&orderby=".$_GET['orderby']."&type=".$_GET['type']."&reports=item_sale_r.php"; 	//your file name  (the name of this file)
 	 								//how many items to show per page
 										if(!empty($_GET['limit'])){
-		$_SESSION[limit]=$_GET['limit'];
+		$_SESSION['limit']=$_GET['limit'];
 		}else{}
-		if(!empty($_SESSION[limit])){
-					$limit = $_SESSION[limit];
+		if(!empty($_SESSION['limit'])){
+					$limit = $_SESSION['limit'];
 					if($limit>100){$limit=$items_per_page+20;}
 			}else{
 				$limit = $items_per_page+20;
@@ -49,7 +49,7 @@ $to=stripslashes(date('Y-m-d',strtotime($to)));
 		$start = ($page - 1) * $limit; 			//first item to display on this page
 	else
 		$start = 0;								//if no page var is given, set start to 0
-$sql = "SELECT * FROM ".$prefix."_sales where item=".$_GET['q']." and type='1' and left(date,10) BETWEEN '$from' AND '$to' order by date DESC LIMIT $start, $limit";	
+$sql = "SELECT * FROM ".$prefix."_sales where (Total + 0) > 0 and item='".$_GET['q']."' and type='1' and left(date,10) BETWEEN '$from' AND '$to' order by date DESC LIMIT $start, $limit";	
 
 	$result = @mysqli_query($con,$sql);
 		/* Setup page vars for display. */
@@ -185,11 +185,11 @@ while($row_search_itemsid = mysqli_fetch_array($result_search_itemsid))
     <th colspan="6" class="text-center"><?php echo"$the_total_lang"; ?></th>
     <th class="text-center"> <?php
   
-$result_get = mysqli_query($con,"SELECT Total FROM ".$prefix."_sales where item=".$_GET['q']." and type='1' and left(date,10) BETWEEN '".$from."' AND '".$to."'");
+$result_get = mysqli_query($con,"SELECT Total FROM ".$prefix."_sales where (Total + 0) > 0 and item='".$_GET['q']."' and type='1' and left(date,10) BETWEEN '".$from."' AND '".$to."'");
 if(@mysqli_num_rows($result_get)>0){
 while($row_get = mysqli_fetch_array($result_get))
   {
-	 $total+=$row_get['Total'];
+	 $total+=(float)$row_get['Total'];
   }
 }
 echo $total;

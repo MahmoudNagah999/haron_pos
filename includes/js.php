@@ -2,39 +2,45 @@
 <script type="text/javascript" src="js/jscroller2-1.61.js"></script>
 <!-- <script type="text/javascript" src="js/jquery.contextmenu.js"></script> -->
 <script type="text/javascript" src="js/select2.min.js"></script>
+<script type="text/javascript" src="jquery.dateentry.package-2.0.0/jquery.plugin.min.js"></script>
 <script src="jquery.dateentry.package-2.0.0/jquery.dateentry.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="jquery.dateentry.package-2.0.0/jquery.plugin.js"></script>
-<script type="text/javascript" src="jquery.dateentry.package-2.0.0/jquery.dateentry.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.colorPicker.js"/></script>		
-    <script type="text/javascript" src="js/jquery.number.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.colorPicker.js"></script>
+<script type="text/javascript" src="js/jquery.number.js"></script>
 
 
-     <script language="javascript" type="text/javascript">
-function addEvent(obj, evType, fn){ 
-	if (obj.addEventListener){ 
-   		obj.addEventListener(evType, fn, false); 
-   		return true; 
- 	} else if (obj.attachEvent){ 
-   		var r = obj.attachEvent("on"+evType, fn); 
-   		return r; 
- 	} else { 
-   		return false; 
- 	} 
-}
- 
-addEvent(window, 'load', initCheckboxes);
- 
-function initCheckboxes() {
-	addEvent(document.getElementById('all'), 'click', setCheckboxes);
-}
- 
-function setCheckboxes() {
-	var cb = document.getElementById('container').getElementsByTagName('input');
- 
-	for (var i = 0; i < cb.length; i++) {
-		cb[i].checked = document.getElementById('all').checked;
-	}
-}
+<script language="javascript" type="text/javascript">
+    function addEvent(obj, evType, fn) {
+        if (!obj) return false;
+        if (obj.addEventListener) {
+            obj.addEventListener(evType, fn, false);
+            return true;
+        } else if (obj.attachEvent) {
+            var r = obj.attachEvent("on" + evType, fn);
+            return r;
+        } else {
+            return false;
+        }
+    }
+
+    addEvent(window, 'load', initCheckboxes);
+
+    function initCheckboxes() {
+        var allCheckbox = document.getElementById('all');
+        if (allCheckbox) {
+            addEvent(allCheckbox, 'click', setCheckboxes);
+        }
+    }
+
+    function setCheckboxes() {
+        var container = document.getElementById('container');
+        var allCheckbox = document.getElementById('all');
+        if (container && allCheckbox) {
+            var cb = container.getElementsByTagName('input');
+            for (var i = 0; i < cb.length; i++) {
+                cb[i].checked = allCheckbox.checked;
+            }
+        }
+    }
 </script>
   <script>
   function confirmSubmit() {

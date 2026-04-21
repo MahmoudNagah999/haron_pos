@@ -30,16 +30,16 @@ $to=stripslashes(date('Y-m-d',strtotime($to)));
 	$adjacents = 3;
 	$query = "SELECT COUNT(*) as num  FROM  ".$prefix."_order_supply where item=".$_GET['q']." and type='1' and  left(date, 10) BETWEEN '$from' AND '$to'";
 	$total_pages = @mysqli_fetch_array(mysqli_query($con,$query));
-	$total_pages = $total_pages[num];
+	$total_pages = $total_pages['num'];
 		
 	/* Setup vars for query. */
 	$targetpage = "?q=".$_GET['q']."&from=".$_GET['from']."&to=".$_GET['to']."&limit=".$_GET['limit']."&orderby=".$_GET['orderby']."&type=".$_GET['type']."&reports=order_supply"; 	//your file name  (the name of this file)
 	 								//how many items to show per page
 										if(!empty($_GET['limit'])){
-		$_SESSION[limit]=$_GET['limit'];
+		$_SESSION['limit']=$_GET['limit'];
 		}else{}
-		if(!empty($_SESSION[limit])){
-					$limit = $_SESSION[limit];
+		if(!empty($_SESSION['limit'])){
+					$limit = $_SESSION['limit'];
 					if($limit>100){$limit=$items_per_page+20;}
 			}else{
 				$limit = $items_per_page+20;

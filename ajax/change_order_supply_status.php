@@ -12,9 +12,10 @@ if (isset($_POST['id'])) {
         $invidid = $_POST['invidid'];
         $idd = $_POST['id'];
 
-        if ($_POST['id']  != $old){
-            $update_temp_sql="INSERT INTO {$prefix}_order_supply_log (`user_name`, `user_id`, `inv_id`, `order_id` ,`old_status`,`new_status`) VALUES ('{$user_username}' , {$user_id} , {$invidid} , {$idd} , {$old} , {$_POST['status']})";
-            mysqli_query($con, $update_temp_sql);
+        if ($_POST['status'] != $old) {
+            $date_now = date('Y-m-d H:i:s');
+            $update_temp_sql="INSERT INTO {$prefix}_order_supply_log (`date`, `user_name`, `user_id`, `inv_id`, `order_id` ,`old_status`,`new_status`) VALUES ('{$date_now}', '{$user_username}' , '{$user_id}' , '{$invidid}' , '{$idd}' , '{$old}' , '{$_POST['status']}')";
+            mysqli_query($con, $update_temp_sql) or die(mysqli_error($con));
         }
         echo json_encode('success');
 

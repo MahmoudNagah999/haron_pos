@@ -41,18 +41,19 @@ if($type==null){$type="DESC";}
 	   First get total number of rows in data table. 
 	   If you have a WHERE clause in your query, make sure you mirror it here.
 	*/
-$query = "SELECT COUNT(*) as num  FROM  ".$prefix."_expenses  left(date,10) BETWEEN '".$from."' AND '".$to."' and type='$exp_type' order by $orderby $type";
-	$total_pages = @mysqli_fetch_array(mysqli_query($con,$query));
-	$total_pages = $total_pages[num];
+$query = "SELECT COUNT(*) as num FROM " . $prefix . "_expenses WHERE (Amount + 0) > 0 and LEFT(date,10) BETWEEN '" . $from . "' AND '" . $to . "' and type='$exp_type'";
+$result_total = mysqli_query($con, $query);
+$row_total = mysqli_fetch_array($result_total);
+$total_pages = $row_total['num'] ?? 0;
 		
 	/* Setup vars for query. */
 	$targetpage = "?limit=".$_GET['limit']."&orderby=".$_GET['orderby']."&type=".$_GET['type']."&reports=expenses"; 	//your file name  (the name of this file)
 	 								//how many items to show per page
 										if(!empty($_GET['limit'])){
-		$_SESSION[limit]=$_GET['limit'];
+		$_SESSION['limit']=$_GET['limit'];
 		}else{}
-		if(!empty($_SESSION[limit])){
-					$limit = $_SESSION[limit];
+		if(!empty($_SESSION['limit'])){
+					$limit = $_SESSION['limit'];
 					if($limit>100){$limit=$items_per_page+20;}
 			}else{
 				$limit = $items_per_page+20;
@@ -62,7 +63,7 @@ $query = "SELECT COUNT(*) as num  FROM  ".$prefix."_expenses  left(date,10) BETW
 		$start = ($page - 1) * $limit; 			//first item to display on this page
 	else
 		$start = 0;								//if no page var is given, set start to 0
-	$sql = "SELECT * FROM ".$prefix."_expenses where left(date,10) BETWEEN '".$from."' AND '".$to."' and type='$exp_type' order by $orderby $type LIMIT $start, $limit";			
+	$sql = "SELECT * FROM ".$prefix."_expenses where (Amount + 0) > 0 and left(date,10) BETWEEN '".$from."' AND '".$to."' and type='$exp_type' order by $orderby $type LIMIT $start, $limit";			
 
 	$result = @mysqli_query($con,$sql);
 		/* Setup page vars for display. */
@@ -199,11 +200,11 @@ while($row_staf = mysqli_fetch_array($result_staff_name))
     <th colspan="2" class="text-center"><?php echo"$the_total_lang"; ?></th>
   <th class="text-center"> <?php
   
-$result_get = mysqli_query($con,"SELECT Amount FROM ".$prefix."_expenses where left(date,10) BETWEEN '".$from."' AND '".$to."' and type='$exp_type'");
+$result_get = mysqli_query($con,"SELECT Amount FROM ".$prefix."_expenses where (Amount + 0) > 0 and left(date,10) BETWEEN '".$from."' AND '".$to."' and type='$exp_type'");
 if(mysqli_num_rows($result_get)>0){
 while($row_get = mysqli_fetch_array($result_get))
   {
-	 $total+=$row_get['Amount'];
+	 $total+=(float)$row_get['Amount'];
   }
 }
 echo $total;

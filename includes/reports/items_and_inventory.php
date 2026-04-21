@@ -12,7 +12,7 @@
     <td width="25%"><?php echo"$the_Group"; ?></td>
   </tr>
                             <?php
-$result_sale_items= mysqli_query($con,"SELECT *,sum(Quantity) as sq FROM ".$prefix."_sales where type='1'  GROUP BY item order by sq DESC limit 0,10");
+$result_sale_items= mysqli_query($con,"SELECT item,subqty,sum(Quantity) as sq FROM ".$prefix."_sales where type='1'  GROUP BY item,subqty order by sq DESC limit 0,10");
 if(@mysqli_num_rows($result_sale_items)>0){
 while($row_sale_items=mysqli_fetch_array($result_sale_items))
   {

@@ -651,18 +651,18 @@ header("refresh:1;url=items_and_inventory.php?groups=".$_GET['groups']."&search=
                             $query = "SELECT COUNT(*) as num  FROM  items where id  IN(".get_hide_items().") and  id='$search' or item like '%$search%' and groupid='" . $_GET['groups'] . "'  order by $orderby $type";
                         }
                         $total_pages = @mysqli_fetch_array(mysqli_query($con, $query));
-                        $total_pages = $total_pages[num];
+                        $total_pages = $total_pages['num'];
 
                         /* Setup vars for query. */
                         $targetpage = "?companies=" . $_GET['companies'] . "&groups=" . $_GET['groups'] . "&search=" . $_GET['search'] . "&limit=" . $_GET['limit'] . "&orderby=" . $_GET['orderby'] . "&type=" . $_GET['type'] . "";  //your file name  (the name of this file)
                         //how many items to show per page
                         if (!empty($_GET['limit'])) {
-                            $_SESSION[limit] = $_GET['limit'];
+                            $_SESSION['limit'] = $_GET['limit'];
                         } else {
                             
                         }
-                        if (!empty($_SESSION[limit])) {
-                            $limit = $_SESSION[limit];
+                        if (!empty($_SESSION['limit'])) {
+                            $limit = $_SESSION['limit'];
                             if ($limit > 100) {
                                 $limit = $items_per_page;
                             }

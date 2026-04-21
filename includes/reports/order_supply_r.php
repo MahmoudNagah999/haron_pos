@@ -73,7 +73,7 @@ if ($user_order_supply_report !== "1" and $user_IsAdmin != 1) {
                 if ($Report_Create_Invoice == 1) {
                     $items = [];
     
-                    $result_up = mysqli_query($con, "SELECT {$prefix}_order_supply.item_status as itemstatus, {$prefix}_order_supply.* , {$prefix}_order_supply_inv.* FROM " . $prefix . "_order_supply_inv Join " . $prefix . "_order_supply on " . $prefix . "_order_supply_inv.inv_id=" . $prefix . "_order_supply.inv_id  where (" . $prefix . "_order_supply_inv.transfer_status != 1 or " . $prefix . "_order_supply_inv.transfer_status is null " . " ) and " . $prefix . "_order_supply_inv.id in (" . implode(',', $cbs) . ") ");
+                    $result_up = mysqli_query($con, "SELECT {$prefix}_order_supply.item_status as itemstatus, {$prefix}_order_supply.* , {$prefix}_order_supply_inv.* FROM " . $prefix . "_order_supply_inv Join " . $prefix . "_order_supply on " . $prefix . "_order_supply_inv.inv_id=" . $prefix . "_order_supply.inv_id  where (" . $prefix . "_order_supply_inv.transfer_status != 1 or " . $prefix . "_order_supply_inv.transfer_status is null " . " ) and " . $prefix . "_order_supply_inv.id in (" . implode(',', (array)$cbs) . ") ");
     
                     while ($row_up = mysqli_fetch_array($result_up)) {
                         $found = false;
@@ -575,7 +575,7 @@ if ($user_order_supply_report !== "1" and $user_IsAdmin != 1) {
                 $mobile1 = stripslashes($_GET['mobile1']);
                 $mobile2 = stripslashes($_GET['mobile2']);
                 $status_array = array();
-                foreach ($_GET['status'] as $one_status) {
+                foreach ((array)$_GET['status'] as $one_status) {
                     if ($one_status != '') {
                         $status_array[] = $one_status;
                     }
@@ -589,7 +589,7 @@ if ($user_order_supply_report !== "1" and $user_IsAdmin != 1) {
 
 
                 $alpha_array = array();
-                foreach ($_GET['Alpha'] as $one_alpha) {
+                foreach ((array)$_GET['Alpha'] as $one_alpha) {
                     if ($one_alpha != '') {
                         $alpha_array[] = $one_alpha;
                     }
@@ -601,21 +601,28 @@ if ($user_order_supply_report !== "1" and $user_IsAdmin != 1) {
                     $alpha = '';
                 }
 
-                $alpha_joins = join("','", $_GET['Alpha']);
+                $alpha_joins = join("','", (array)$_GET['Alpha']);
 
                 $inv = stripslashes($_GET['inv']);
                 $UerID = stripslashes($_GET['UerID']);
                 // $products=$_GET['products'];
                 // $products = array();
-                $products = implode(',', $_GET['products']);
+                $products = implode(',', (array)$_GET['products']);
 
                 // $branch = array();
-                $branch = implode(',', $_GET['branch_id']);
+                $branch = implode(',', (array)$_GET['branch_id']);
 
 
                 if ($inv == "" or $inv == null) {
                 } else {
-                    $add_sql .= "inv_id='$inv' and ";
+                    if (strpos($inv, ',') !== false) {
+                        $inv_arr = explode(',', $inv);
+                        $inv_arr = array_map('trim', $inv_arr);
+                        $inv_str = "'" . implode("','", $inv_arr) . "'";
+                        $add_sql .= "inv_id IN ($inv_str) and ";
+                    } else {
+                        $add_sql .= "inv_id='" . trim($inv) . "' and ";
+                    }
                 }
 
 
@@ -886,11 +893,11 @@ if ($user_order_supply_report !== "1" and $user_IsAdmin != 1) {
                     }
                     #############################
                     if ($Discount_type == 1) {
-                        $total_val = $row['Total'] - ($row['discount']);
+                        $total_val = (float)$row['Total'] - (float)($row['discount']);
                     } else if ($Discount_type == 2) {
-                        $total_val = $row['Total'] - ($row['Total'] * $row['discount'] / 100);
+                        $total_val = (float)$row['Total'] - ((float)$row['Total'] * (float)$row['discount'] / 100);
                     } else {
-                        $total_val = $row['Total'] - ($row['discount']);
+                        $total_val = (float)$row['Total'] - (float)($row['discount']);
                     }
                     //                Mahmoud Kamal
                     //                $total_val_after_tax_and_shipping=  $total_val+$row['shipping'];
@@ -1011,15 +1018,15 @@ if ($user_order_supply_report !== "1" and $user_IsAdmin != 1) {
                                                         while ($row_get = mysqli_fetch_array($result_get)) {
                                                             ###################
                                                             if ($Discount_type == 1) {
-                                                                $total_val2 = $row_get['Total'] - ($row_get['discount']);
+                                                                $total_val2 = (float)$row_get['Total'] - (float)($row_get['discount']);
                                                             } else if ($Discount_type == 2) {
-                                                                $total_val2 = $row_get['Total'] - ($row_get['Total'] * $row_get['discount'] / 100);
+                                                                $total_val2 = (float)$row_get['Total'] - ((float)$row_get['Total'] * (float)$row_get['discount'] / 100);
                                                             } else {
-                                                                $total_val2 = $row_get['Total'] - ($row_get['discount']);
+                                                                $total_val2 = (float)$row_get['Total'] - (float)($row_get['discount']);
                                                             }
                                                             //                Mahmoud Kamal
                                                             //                        $total_val_after_tax_and_shipping2+=  $total_val2+$row_get['tax']+$row_get['shipping'];
-                                                            $total_val_after_tax_and_shipping2 +=  $total_val2 + $row_get['tax'];
+                                                            $total_val_after_tax_and_shipping2 +=  $total_val2 + (float)$row_get['tax'];
                                                             #################
                                                         }
                                                     }

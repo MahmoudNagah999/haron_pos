@@ -49,19 +49,19 @@ $to=stripslashes(date('Y-m-d',strtotime($to)));
 	$tbl_name="sales";		//your table name
 	// How many adjacent pages should be shown on each side?
 	$adjacents = 3;
-	   $query = "SELECT COUNT(".$prefix."_sales.id) as num  FROM  ".$prefix."_sales Join ".$prefix."_sales_inv on ".$prefix."_sales.inv_id=".$prefix."_sales_inv.inv_id where   $quy  ".$prefix."_sales.type='1' and  left(".$prefix."_sales.date, 10) BETWEEN '$from' AND '$to'  group by ".$prefix."_sales.item";
+	   $query = "SELECT COUNT(".$prefix."_sales.id) as num  FROM  ".$prefix."_sales Join ".$prefix."_sales_inv on ".$prefix."_sales.inv_id=".$prefix."_sales_inv.inv_id where (".$prefix."_sales.Total + 0) > 0 and $quy  ".$prefix."_sales.type='1' and  left(".$prefix."_sales.date, 10) BETWEEN '$from' AND '$to'  group by ".$prefix."_sales.item";
 	$total_pages = @mysqli_fetch_array(mysqli_query($con,$query));
-//	$total_pages = $total_pages[num];
+//	$total_pages = $total_pages['num'];
 	$total_pages = mysqli_affected_rows($con);
 
 	/* Setup vars for query. */
 	$targetpage = "?q=".$_GET['q']."&from=".$_GET['from']."&store_id=".$_GET['store_id']."&branch_id=".$_GET['branch_id']."&item=".$_GET['item']."&to=".$_GET['to']."&limit=".$_GET['limit']."&orderby=".$_GET['orderby']."&type=".$_GET['type']."&reports=total_item_sale_r.php"; 	//your file name  (the name of this file)
 	 								//how many items to show per page
 										if(!empty($_GET['limit'])){
-		$_SESSION[limit]=$_GET['limit'];
+		$_SESSION['limit']=$_GET['limit'];
 		}else{}
-		if(!empty($_SESSION[limit])){
-					$limit = $_SESSION[limit];
+		if(!empty($_SESSION['limit'])){
+					$limit = $_SESSION['limit'];
 					if($limit>100){$limit=$items_per_page+20;}
 			}else{
 				$limit = $items_per_page+20;
@@ -71,7 +71,7 @@ $to=stripslashes(date('Y-m-d',strtotime($to)));
 		$start = ($page - 1) * $limit; 			//first item to display on this page
 	else
 		$start = 0;								//if no page var is given, set start to 0
-    $sql = "SELECT ".$prefix."_sales.item , sum(".$prefix."_sales.Quantity) as Quantity   FROM  ".$prefix."_sales Join ".$prefix."_sales_inv on ".$prefix."_sales.inv_id=".$prefix."_sales_inv.inv_id where   $quy  ".$prefix."_sales.type='1' and  left(".$prefix."_sales.date, 10) BETWEEN '$from' AND '$to'  group by ".$prefix."_sales.item order by ".$prefix."_sales.date DESC LIMIT $start, $limit";
+    $sql = "SELECT ".$prefix."_sales.item , sum(".$prefix."_sales.Quantity) as QuantitySum   FROM  ".$prefix."_sales Join ".$prefix."_sales_inv on ".$prefix."_sales.inv_id=".$prefix."_sales_inv.inv_id where (".$prefix."_sales.Total + 0) > 0 and $quy  ".$prefix."_sales.type='1' and  left(".$prefix."_sales.date, 10) BETWEEN '$from' AND '$to'  group by ".$prefix."_sales.item order by QuantitySum DESC LIMIT $start, $limit";
 
 	$result = @mysqli_query($con,$sql);
 		/* Setup page vars for display. */
@@ -194,7 +194,7 @@ while($row_search_itemsid = mysqli_fetch_array($result_search_itemsid))
   <tr class="<?php echo"".$class.""; ?>">
 <!--  <td>--><?php //echo"".$row['id'].""; ?><!--</td>-->
   <td><?php echo"".$itemsname.""; ?></td>
-    <td><?php echo"".$row['Quantity'].""; ?></td>
+    <td><?php echo"".$row['QuantitySum'].""; ?></td>
 <!--      <td>--><?php //echo"".$row['Price'].""; ?><!--</td>-->
 <!--  <td>--><?php //echo"".$row['date'].""; ?><!--</td>-->
 <!--  <td>--><?php //echo"".$supplier_name.""; ?><!--</td>-->

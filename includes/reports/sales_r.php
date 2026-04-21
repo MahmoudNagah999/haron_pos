@@ -77,18 +77,18 @@ if($UerID=="" or $UerID==null){}else{$add_sql_UerID="user_id='$UerID' and ";}
 	// How many adjacent pages should be shown on each side?
 	$adjacents = 3;
 //	$query = "SELECT COUNT(*) as num  FROM  ".$prefix."_sales_inv where $add_sql $add_sql_UerID $add_sql_doc type in('1','2') and  left(date, 10) BETWEEN '".$from."' AND '".$to."'";
-	$query = "SELECT COUNT(*) as num  FROM  ".$prefix."_sales_inv where $add_sql $add_sql_UerID $add_sql_doc type in('1') and  left(date, 10) BETWEEN '".$from."' AND '".$to."'";
+	$query = "SELECT COUNT(*) as num  FROM  ".$prefix."_sales_inv where (Total + 0) > 0 and $add_sql $add_sql_UerID $add_sql_doc type in('1') and  left(date, 10) BETWEEN '".$from."' AND '".$to."'";
 	$total_pages = @mysqli_fetch_array(mysqli_query($con,$query));
-	$total_pages = $total_pages[num];
+	$total_pages = $total_pages['num'];
 		
 	/* Setup vars for query. */
 	$targetpage = "?UerID=".$_GET['UerID']."&client_id=".$_GET['client_id']."&notes=".$_GET['notes']."&branch_id=".$_GET['branch_id']."&store_id=".$_GET['store_id']."&reports=".$_GET['reports']."&doc=".$_GET['doc']."&inv=".$_GET['inv']."&from=".$_GET['from']."&to=".$_GET['to']."&limit=".$_GET['limit']."&orderby=".$_GET['orderby']."&type=".$_GET['type'].""; 	//your file name  (the name of this file)
 	 								//how many items to show per page
 										if(!empty($_GET['limit'])){
-		$_SESSION[limit]=$_GET['limit'];
+		$_SESSION['limit']=$_GET['limit'];
 		}else{}
-		if(!empty($_SESSION[limit])){
-					$limit = $_SESSION[limit];
+		if(!empty($_SESSION['limit'])){
+					$limit = $_SESSION['limit'];
 					if($limit>100){$limit=$items_per_page+20;}
 			}else{
 				$limit = $items_per_page+20;
@@ -99,7 +99,7 @@ if($UerID=="" or $UerID==null){}else{$add_sql_UerID="user_id='$UerID' and ";}
 	else
 		$start = 0;								//if no page var is given, set start to 0
 //$sql = "SELECT * FROM ".$prefix."_sales_inv where $add_sql $add_sql_UerID $add_sql_doc type in('1','2') and left(date,10) BETWEEN '".$from."' AND '".$to."' order by $orderby $type LIMIT $start, $limit";
-$sql = "SELECT * FROM ".$prefix."_sales_inv where $add_sql $add_sql_UerID $add_sql_doc type in('1') and left(date,10) BETWEEN '".$from."' AND '".$to."' order by $orderby $type LIMIT $start, $limit";
+$sql = "SELECT * FROM ".$prefix."_sales_inv where (Total + 0) > 0 and $add_sql $add_sql_UerID $add_sql_doc type in('1') and left(date,10) BETWEEN '".$from."' AND '".$to."' order by $orderby $type LIMIT $start, $limit";
 	$result = @mysqli_query($con,$sql);
 		/* Setup page vars for display. */
 	if ($page == 0) $page = 1;					//if no page var is given, default to 1.
@@ -213,21 +213,21 @@ else if($row['PaymentMethod']==3){$PaymentMethod="$check_lang";}
 else{}
 #############################
 if ($Discount_type == 1) {
-   $total_val=$row['Total']-($row['discount']);
+   $total_val=(float)$row['Total']-(float)($row['discount']);
 }
 else if ($Discount_type == 2) {
-   $total_val=$row['Total']-($row['Total']*$row['discount']/100);
+   $total_val=(float)$row['Total']-((float)$row['Total']*(float)$row['discount']/100);
 } else {
-      $total_val=$row['Total']-($row['discount']);
+      $total_val=(float)$row['Total']-(float)($row['discount']);
 }
 $total_val_after_tax_and_shipping=  $total_val+$row['tax']+$row['shipping'];                                          
 ?>
   <tr class="<?php echo"".$class.""; ?>">
   <td><?php echo"".$row['id'].""; ?></td>
-      <td ><?php echo"".get_user_data($row['user_id'])[name].""; ?></td>
-      <td ><?php echo"".get_user_data($row['edit_user'])[name].""; ?></td>
+      <td ><?php echo"".get_user_data($row['user_id'])['name'].""; ?></td>
+      <td ><?php echo"".get_user_data($row['edit_user'])['name'].""; ?></td>
   <td><?php echo"".$row['inv_id'].""; ?></td>
-  <td><?php echo"".get_branch_data($row['branch_id'])[name].""; ?></td>
+  <td><?php echo"".get_branch_data($row['branch_id'])['name'].""; ?></td>
 
   <td><?php echo"".substr($row['date'], 0, 10).""; ?></td>
 
@@ -257,7 +257,7 @@ $total_val_after_tax_and_shipping=  $total_val+$row['tax']+$row['shipping'];
     <th class="text-center"> <?php
   
 //$result_get = mysqli_query($con,"SELECT * FROM ".$prefix."_sales_inv where ".$add_sql." ".$add_sql_UerID." ".$add_sql_doc." type in('1','2') and left(date,10) BETWEEN '".$from."' AND '".$to."'");
-$result_get = mysqli_query($con,"SELECT * FROM ".$prefix."_sales_inv where ".$add_sql." ".$add_sql_UerID." ".$add_sql_doc." type in('1') and left(date,10) BETWEEN '".$from."' AND '".$to."'");
+$result_get = mysqli_query($con,"SELECT * FROM ".$prefix."_sales_inv where (Total + 0) > 0 and ".$add_sql." ".$add_sql_UerID." ".$add_sql_doc." type in('1') and left(date,10) BETWEEN '".$from."' AND '".$to."'");
 if(mysqli_num_rows($result_get)>0){
 while($row_get = mysqli_fetch_array($result_get))
   {
