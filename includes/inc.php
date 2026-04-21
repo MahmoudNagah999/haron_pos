@@ -1,4 +1,6 @@
 <?php
+//phpinfo();
+//die();
 ob_start(); // Initiate the output buffer
 //ini_set('display_errors', 1);
 //error_reporting(~0);
@@ -20,25 +22,17 @@ $databaseuser = $tenant_res;
 $databasepass = $tenant_res;
 $databasename = $tenant_res;
 */
-$databaseuser="root";
-$databasepass="";
-$databasename="pos";
-
-if ("localhost:2222" == $_SERVER['HTTP_HOST'] || true) {
-
-    $databaseuser = "root";
-    $databasepass = "";
-    $databasename = "marchent";
-//    $databasename="merchants";
-//    $databasename="mtest";
-
-} else {
-    $databaseuser = "fly4u_merchants";
-    $databasepass = "merchants123456";
-    $databasename = "fly4u_merchants";
+$databaseuser = "root";
+$databasepass = "123456";
+$databasename = "pos";
+$databasehost="localhost";
+//$databasehost = "127.0.0.1";
 
 
-}
+//var_dump($databasehost);
+//var_dump($databaseuser);
+//var_dump($databasepass);
+//var_dump($databasename);
 $con = mysqli_connect($databasehost, $databaseuser, $databasepass, $databasename);
 $allow_num_users = 1000;
 $allow_num_cat = 50;
@@ -85,7 +79,7 @@ if ($num > 0) {
     while ($row_login = mysqli_fetch_array($result_login)) {
         $user_id = $row_login['id'];
         $user_branch_id = $row_login['branch_id'];
-        $user_branch_id_exploded = explode(',',$row_login['branch_id']);
+        $user_branch_id_exploded = explode(',', $row_login['branch_id']);
         $user_name = $row_login['name'];
         $user_username = $row_login['username'];
         $user_password = $row_login['password'];
@@ -145,9 +139,9 @@ if ($login == "0") {
     if (basename($_SERVER['PHP_SELF']) == $url or $cur_dir == 'backup') {
 
     } else {
-        $fm = basename("https://" . $_SERVER[HTTP_HOST] . "" . $_SERVER[REQUEST_URI] . "");
+        $fm = basename("https://" . $_SERVER["HTTP_HOST"] . "" . $_SERVER["REQUEST_URI"] . "");
         $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-//        $url = "login.php?fm=" . str_replace('https', '', $actual_link) . "";
+        //        $url = "login.php?fm=" . str_replace('https', '', $actual_link) . "";
         header("Location: " . $url . "");
     }
 }
@@ -309,7 +303,7 @@ function GetQuantity($id, $all = null, $store_id = 0, $date_from = null, $date_t
 {
     global $con;
     global $prefix;
-############################
+    ############################
     $sqlConStoreReceiv = '';
     $sqlConStoreSale = '';
 
@@ -319,7 +313,7 @@ function GetQuantity($id, $all = null, $store_id = 0, $date_from = null, $date_t
         $date_to = str_replace("/", "-", $_GET['date_to']);
         $date_to = stripslashes(date('Y-m-d', strtotime($date_to)));
         $date_from = $date_from . " 00:00:00";
-//        $date_to =$date_to . " 00:00:00";
+        //        $date_to =$date_to . " 00:00:00";
         $sqlConStoreReceiv .= ' and  ' . $prefix . '_receivings_inv.date BETWEEN "' . $date_from . '" AND "' . $date_to . '" ';
         $sqlConStoreSale .= ' and  ' . $prefix . '_sales_inv.date BETWEEN "' . $date_from . '" AND "' . $date_to . '"';
     }
@@ -356,7 +350,7 @@ function GetQuantity($id, $all = null, $store_id = 0, $date_from = null, $date_t
         $Quantitytotallast -= $rowalast['Quantity'];
     }
     $sqlConStoreStoreChanges = '';
-//    if ($date_from==null and $date_to!=null){
+    //    if ($date_from==null and $date_to!=null){
 //        $date_from=date("d/m/Y") ;
 //    }
 //    if ($date_from!=null and $date_to==null){
@@ -391,11 +385,11 @@ function GetQuantity($id, $all = null, $store_id = 0, $date_from = null, $date_t
         $Quantitytotallast -= $rowalast1['Quantity'];
     }
 
-####################
+    ####################
     if ($all == '1') {
 
 
-        $getQuantity = get_sum_product_store_data($id, $store_id, $date_from, $date_to)[Quantity];
+        $getQuantity = get_sum_product_store_data($id, $store_id, $date_from, $date_to)['Quantity'];
         return $Quantitytotala = $Quantitytotallast + $getQuantity;
     } else {
         return $Quantitytotala = $Quantitytotallast;
@@ -404,22 +398,22 @@ function GetQuantity($id, $all = null, $store_id = 0, $date_from = null, $date_t
 
 #############
 
-function Get_model_name($modelid , $offer = false)
+function Get_model_name($modelid, $offer = false)
 {
     global $con;
     global $prefix;
-    if ($offer == "offers"){
+    if ($offer == "offers") {
         $result_models = @mysqli_query($con, "SELECT * FROM " . $prefix . "_offers_inv where id=" . $modelid . "");
-    }else{
+    } else {
         $result_models = @mysqli_query($con, "SELECT item FROM items where id=" . $modelid . " order by id ASC");
     }
     $num_models = @mysqli_num_rows($result_models);
     if ($num_models > 0) {
         while ($row_models = mysqli_fetch_array($result_models)) {
 
-            if ($offer == "offers"){
+            if ($offer == "offers") {
                 $model_db = $row_models['name'];
-            }else{
+            } else {
                 $model_db = $row_models['item'];
             }
         }
@@ -543,7 +537,7 @@ function Get_size_name($sizeid)
     }
 }
 
-################################# 
+#################################
 
 function new_bug($bug_num, $date, $notes)
 {
@@ -775,12 +769,12 @@ function get_region_childs($id)
     global $con;
     global $prefix;
     $childs = array();
-    $childs [] = $id;
+    $childs[] = $id;
     $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_region where parent_id=" . $id . "");
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $childs [] = $row['id'];
+            $childs[] = $row['id'];
             $childs = get_child_recursive($row['id'], $childs);
 
         }
@@ -815,8 +809,8 @@ function get__order_supply_status_data_by_name($name)
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[id] = $row['id'];
-            $data[notes] = $row['notes'];
+            $data["id"] = $row['id'];
+            $data["notes"] = $row['notes'];
         }
     }
     return $data;
@@ -826,13 +820,14 @@ function get_branch_data($id)
 {
     global $con;
     global $prefix;
-    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_branch where id=" . $id . "");
+    $result = @mysqli_query($con, "SELECT * FROM " . $prefix . "_branch where id in (" . $id . ")");
+
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[name] = $row['name'];
-            $data[notes] = $row['notes'];
-            $data[logo] = $row['logo'];
+            $data["name"] = $row['name'];
+            $data["notes"] = $row['notes'];
+            $data["logo"] = $row['logo'];
         }
     } else {
         $data[name] = '-';
@@ -857,14 +852,14 @@ function get_product_store_data($item, $store_id)
 function get_sum_product_store_data($item, $store_id = null, $date_from = null, $date_to = null)
 {
 
-    $data[Quantity] = 0;
+    $data['Quantity'] = 0;
     global $con;
     global $prefix;
     $sqlCon = '';
     if ($store_id > 0) {
         $sqlCon .= ' and store_id=' . $store_id . ' ';
     }
-//    if ($date_from==null and $date_to!=null){
+    //    if ($date_from==null and $date_to!=null){
 //        $date_from=date("d/m/Y") ;
 //    }
 //    if ($date_from!=null and $date_to==null){
@@ -882,7 +877,7 @@ function get_sum_product_store_data($item, $store_id = null, $date_from = null, 
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
-            $data[Quantity] = $row['Quantity'];
+            $data['Quantity'] = $row['Quantity'];
         }
     }
     return $data;
@@ -1075,8 +1070,18 @@ function get_order_supply_data($id, $type)
 }
 
 function get_order_supply_inv_data_by_id
-($ids, $from = null, $to = null, $mobile1 = null, $status = null, $inv = null, $region = null, $UerID = null, $mobile2 = null, $branch_id = null)
-{
+(
+    $ids,
+    $from = null,
+    $to = null,
+    $mobile1 = null,
+    $status = null,
+    $inv = null,
+    $region = null,
+    $UerID = null,
+    $mobile2 = null,
+    $branch_id = null
+) {
     $sqlCon = '';
     if ($ids != NULL) {
         $sqlCon = ' id IN (' . $ids . ')  and ';
@@ -1100,15 +1105,15 @@ function get_order_supply_inv_data_by_id
         $dateSqlCon .= " and left(date,10)  >=  '" . $from . "'";
 
     } else {
-//        $dateSqlCon .="and left(date,10) BETWEEN '".date("d/m/Y")."' AND '".date("d/m/Y")."'";
+        //        $dateSqlCon .="and left(date,10) BETWEEN '".date("d/m/Y")."' AND '".date("d/m/Y")."'";
 
     }
 
     $mobile2 = stripslashes($_GET['mobile2']);
     $mobile1 = stripslashes($_GET['mobile1']);
-//    echo $status=stripslashes($_GET['status']);
+    //    echo $status=stripslashes($_GET['status']);
     $inv = stripslashes($_GET['inv']);
-//    $branch_id=stripslashes($_GET['branch_id']);
+    //    $branch_id=stripslashes($_GET['branch_id']);
 //    die($branch_id);
 
     $UerID = stripslashes($_GET['UerID']);
@@ -1122,7 +1127,7 @@ function get_order_supply_inv_data_by_id
         $add_sql .= "branch_id IN ($branch_id) and ";
     }
     if ($_GET['region_id'] != "null" and $_GET['region_id'] != null and $_GET['region_id'] != '') {
-//        $regions=explode(',',stripslashes($_GET['region_id']));
+        //        $regions=explode(',',stripslashes($_GET['region_id']));
 
         $i = 0;
         foreach ($_GET['region_id'] as $region) {
@@ -1163,7 +1168,7 @@ function get_order_supply_inv_data_by_id
     global $con;
     global $prefix;
     $sql = "SELECT *,left(date,10) as date FROM cairo_order_supply_inv  where  $sqlCon  $add_sql $add_sql_doc inv_id!='' $dateSqlCon order by id asc";
-//  die();
+    //  die();
     $result = @mysqli_query($con, $sql);
     $num = @mysqli_num_rows($result);
     if ($num > 0) {
@@ -1207,8 +1212,14 @@ function get_order_supply_inv_data_by_id
 
 #######################################
 function get_stores_change_inv_data_by_id
-($ids, $from = null, $to = null, $notes = null, $store_from_id = null, $store_to_id = null)
-{
+(
+    $ids,
+    $from = null,
+    $to = null,
+    $notes = null,
+    $store_from_id = null,
+    $store_to_id = null
+) {
     $sqlCon = '';
     if ($ids != NULL) {
         $sqlCon = ' id IN (' . $ids . ')  and ';
@@ -1248,7 +1259,7 @@ function get_stores_change_inv_data_by_id
         $dateSqlCon .= " and left(date,10)  >=  '" . $from . "'";
 
     } else {
-//        $dateSqlCon .="and left(date,10) BETWEEN '".date("d/m/Y")."' AND '".date("d/m/Y")."'";
+        //        $dateSqlCon .="and left(date,10) BETWEEN '".date("d/m/Y")."' AND '".date("d/m/Y")."'";
 
     }
     global $con;
