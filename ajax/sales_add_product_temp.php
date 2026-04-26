@@ -35,12 +35,12 @@ if (isset($_POST['ch_status']) and $_POST['ch_status']=='chngeQ') {
             if ($Discount == 0) {
                 $DiscountValue = $Discount;
             } else {
-                $DiscountValue = ($quantity * $Price) * ($Discount / 100);
+                $DiscountValue = ((float) $quantity * (float) $Price) * ((float) $Discount / 100);
             }
         } else {
             $DiscountValue = $Discount;
         }
-        $Total = ($quantity * $Price) - $DiscountValue;
+        $Total = ((float) $quantity * (float) $Price) - (float) $DiscountValue;
         if ($quantity != 0 or $quantity != "") {
             mysqli_query($con, "UPDATE " . $prefix . "_sales_temporary SET  Quantity='" . $quantity . "',Price='" . $Price . "',Discount='" . $Discount . "',
 Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',sales_type='" . $sales_type . "',size='" . $size . "',color='" . $color . "',user_id='$user_id',staff='$staff'  where id='" . $row_up['id'] . "'");
@@ -105,11 +105,11 @@ else {
                         $item_Retail_price_new = $row_new['subprice'];
                     }
                     if ($Discount_type == 1) {
-                        $item_total_new = $item_Retail_price_new - $row_new['Discount'];
+                        $item_total_new = (float) $item_Retail_price_new - (float) $row_new['Discount'];
                     } else if ($Discount_type == 2) {
-                        $item_total_new = $item_Retail_price_new - (($item_Retail_price_new) * ($row_new['Discount'] / 100));
+                        $item_total_new = (float) $item_Retail_price_new - (((float) $item_Retail_price_new) * ((float) $row_new['Discount'] / 100));
                     } else {
-                        $item_total_new = $item_Retail_price_new;
+                        $item_total_new = (float) $item_Retail_price_new;
                     }
                     $sql = "INSERT INTO " . $prefix . "_sales_temporary (item, Price, Quantity, Discount, Total, type, date, BuyPrice, subqty, sales_type, size, color, user_id)
 							VALUES ('" . $item_id_new . "','" . $item_Retail_price_new . "','1','" . $row_new['Discount'] . "','" . $item_total_new . "','1','" . $DueDate . "','" . $item_price_new . "','" . $item_subqty . "','" . $get_db_sales_type . "','" . $size . "','" . $color . "','".$user_id."')";

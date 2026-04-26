@@ -178,13 +178,13 @@ if (isset($_GET['SupplierID'])) {
                                             if ($Discount_type == 1) {
                                                 $DiscountValuet = $Discountt;
                                             } else if ($Discount_type == 2) {
-                                 $DiscountValuet = ($quantityt * $Pricet) * ($Discountt / 100);
+                                                $DiscountValuet = ((float) $quantityt * (float) $Pricet) * ((float) $Discountt / 100);
 
                                             } else {
                                                 $DiscountValuet = $Discountt;
                                             }
-                                            $Totalt = ($quantityt * $Pricet) - $DiscountValuet;
-                                            $inv_Totalt+=($quantityt * $Pricet) - $DiscountValuet;
+                                            $Totalt = ((float) $quantityt * (float) $Pricet) - (float) $DiscountValuet;
+                                            $inv_Totalt += ((float) $quantityt * (float) $Pricet) - (float) $DiscountValuet;
                                         }
                                         ###############################################
                                         $pay = $_POST['pay'];
@@ -246,13 +246,13 @@ if (isset($_GET['SupplierID'])) {
                                                     if ($Discount == 0) {
                                                         $DiscountValue = $Discount;
                                                     } else {
-                                                        $DiscountValue = ($quantity * $Price) * ($Discount / 100);
+                                                        $DiscountValue = ((float) $quantity * (float) $Price) * ((float) $Discount / 100);
                                                     }
                                                 } else {
                                                     $DiscountValue = $Discount;
                                                 }
-                                                $Total = ($quantity * $Price) - $DiscountValue;
-                                                $inv_Total+=($quantity * $Price) - $DiscountValue;
+                                                 $Total = ((float) $quantity * (float) $Price) - (float) $DiscountValue;
+                                                 $inv_Total+=((float) $quantity * (float) $Price) - (float) $DiscountValue;
 
 if (mysqli_query($con, "UPDATE " . $prefix . "_sales staff='" . $staff . "',Quantity='" . ($quantity) . "',
 Price='" . $Price . "',Discount='" . $Discount . "',Total='" . $Total . "',date='" . $DueDate . "',type='1',sales_type='" . $sales_type . "',BuyPrice=(select price from items where id='" . $item . "') where user_id='$user_id' and id='" . $row_up['id'] . "'")) {
@@ -337,7 +337,7 @@ VALUES ('" . $_POST['branch_id'] . "','" . $data['inv_id'] . "','" . $_POST['Sup
                                             } else {
                                                 $DiscountValue = $Discount;
                                             }
-                                            $Total = ($quantity * $Price) - $DiscountValue;
+                                             $Total = ((float) $quantity * (float) $Price) - (float) $DiscountValue;
                                           //  echo $quantity;
                                          //   echo"<br />";
                                             if ($quantity == 0 or $quantity == ""  or $quantity == null) {
@@ -402,11 +402,11 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',sales_type='" . $sa
                                                         $item_price_new = $row_new['price'];
                                                         $item_subqty = $row_new['subqty'];
                                                         if ($Discount_type == 1) {
-                                                            $item_total_new = $item_Retail_price_new - $row_new['Discount'];
+                                                            $item_total_new = (float) $item_Retail_price_new - (float) $row_new['Discount'];
                                                         } else if ($Discount_type == 2) {
-                                                            $item_total_new = $item_Retail_price_new - (($item_Retail_price_new) * ($row_new['Discount'] / 100));
+                                                            $item_total_new = (float) $item_Retail_price_new - (((float) $item_Retail_price_new) * ((float) $row_new['Discount'] / 100));
                                                         } else {
-                                                            $item_total_new = $item_Retail_price_new;
+                                                            $item_total_new = (float) $item_Retail_price_new;
                                                         }
                                                         $sql = "INSERT INTO " . $prefix . "_sales (item, Price, Quantity, Discount, Total, BuyPrice, date, type, subqty, sales_type, size ,color, user_id)
 							VALUES ('" . $item_id_new . "','" . $item_Retail_price_new . "','1','" . $row_new['Discount'] . "','" . $item_total_new . "','" . $item_price_new . "','" . $DueDate . "','1','" . $item_subqty . "','" . $get_db_sales_type . "','" . $get_barcode_size . "','" . $get_barcode_color . "','".$user_id."')";
@@ -461,11 +461,11 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',sales_type='" . $sa
                                                             $item_Retail_price_new = $row_new['subprice'];
                                                         }
                                                         if ($Discount_type == 1) {
-                                                            $item_total_new = $item_Retail_price_new - $row_new['Discount'];
+                                                            $item_total_new = (float) $item_Retail_price_new - (float) $row_new['Discount'];
                                                         } else if ($Discount_type == 2) {
-                                                            $item_total_new = $item_Retail_price_new - (($item_Retail_price_new) * ($row_new['Discount'] / 100));
+                                                            $item_total_new = (float) $item_Retail_price_new - (((float) $item_Retail_price_new) * ((float) $row_new['Discount'] / 100));
                                                         } else {
-                                                            $item_total_new = $item_Retail_price_new;
+                                                            $item_total_new = (float) $item_Retail_price_new;
                                                         }
                                                         $sql = "INSERT INTO " . $prefix . "_sales (item, Price, Quantity, Discount, Total, type, date, BuyPrice, subqty, sales_type, size, color, user_id, inv_id)
 							VALUES ('" . $item_id_new . "','" . $item_Retail_price_new . "','1','" . $row_new['Discount'] . "','" . $item_total_new . "','1','" . $DueDate . "','" . $item_price_new . "','" . $item_subqty . "','" . $get_db_sales_type . "','" . $size . "','" . $color . "','".$user_id."','".$inv_id."')";
@@ -938,7 +938,7 @@ echo'<option value="'.$row_staff['id'].'" '.$select.'>'.$row_staff['name'].'</op
                                         <div style="width:100%; margin:0 auto; text-align:center; float:right; text-align:center;">
 
                                             <?php
-                                            $result_cat = mysqli_query($con, "SELECT * FROM products where rank!='0' and rank!='' and id>0  order by rank ASC");
+                                            $result_cat = mysqli_query($con, "SELECT * FROM products where `rank`!='0' and `rank`!='' and id>0  order by `rank` ASC");
                                             if (@mysqli_num_rows($result_cat) >= 1) {
                                                 while ($row_cat = mysqli_fetch_array($result_cat)) {
                                                     if ($row_cat['id'] == $db_cat_items_show) {

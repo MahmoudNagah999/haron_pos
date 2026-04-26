@@ -160,15 +160,15 @@ if (isset($_GET['cat_show'])) {
                                         $stores_change_type = $_POST[stores_change_type . $row_upt['id']];
                                         $size = $_POST[size . $row_upt['id']];
                                         $color = $_POST[color . $row_upt['id']];
-                                        if ($Discount_type == 1) {
-                                            $DiscountValuet = $Discountt;
-                                        } else if ($Discount_type == 2) {
-                                            $DiscountValuet = ($quantityt * $Pricet) * ($Discountt / 100);
-                                        } else {
-                                            $DiscountValuet = $Discountt;
-                                        }
-                                        $Totalt = ($quantityt * $Pricet) - $DiscountValuet;
-                                        $inv_Totalt += ($quantityt * $Pricet) - $DiscountValuet;
+                                         if ($Discount_type == 1) {
+                                             $DiscountValuet = $Discountt;
+                                         } else if ($Discount_type == 2) {
+                                             $DiscountValuet = ((float) $quantityt * (float) $Pricet) * ((float) $Discountt / 100);
+                                         } else {
+                                             $DiscountValuet = $Discountt;
+                                         }
+                                         $Totalt = ((float) $quantityt * (float) $Pricet) - (float) $DiscountValuet;
+                                         $inv_Totalt += ((float) $quantityt * (float) $Pricet) - (float) $DiscountValuet;
                                     }
                                     ###############################################
                                     $pay = $_POST['pay'];
@@ -206,19 +206,19 @@ if (isset($_GET['cat_show'])) {
                                         } else {
                                             $stores_change_type = "1";
                                         }
-                                        if ($Discount_type == 1) {
-                                            $DiscountValue = $Discount;
-                                        } else if ($Discount_type == 2) {
-                                            if ($Discount == 0) {
-                                                $DiscountValue = $Discount;
-                                            } else {
-                                                $DiscountValue = ($quantity * $Price) * ($Discount / 100);
-                                            }
-                                        } else {
-                                            $DiscountValue = $Discount;
-                                        }
-                                        $Total = ($quantity * $Price) - $DiscountValue;
-                                        $inv_Total += ($quantity * $Price) - $DiscountValue;
+                                         if ($Discount_type == 1) {
+                                             $DiscountValue = $Discount;
+                                         } else if ($Discount_type == 2) {
+                                             if ($Discount == 0) {
+                                                 $DiscountValue = $Discount;
+                                             } else {
+                                                 $DiscountValue = ((float) $quantity * (float) $Price) * ((float) $Discount / 100);
+                                             }
+                                         } else {
+                                             $DiscountValue = $Discount;
+                                         }
+                                         $Total = ((float) $quantity * (float) $Price) - (float) $DiscountValue;
+                                         $inv_Total += ((float) $quantity * (float) $Price) - (float) $DiscountValue;
 
                                         $updateSqlStatement = "UPDATE " . $prefix . "_stores_change SET staff='" . $staff . "'
                                                 ,Quantity='" . $quantity . "', Price='" . $Price . "',Discount='" . $Discount . "'
@@ -347,11 +347,11 @@ if (isset($_GET['cat_show'])) {
                                                 $item_price_new = $row_new['price'];
                                                 $item_subqty = $row_new['subqty'];
                                                 if ($Discount_type == 1) {
-                                                    $item_total_new = $item_Retail_price_new - $row_new['Discount'];
+                                                    $item_total_new = (float) $item_Retail_price_new - (float) $row_new['Discount'];
                                                 } else if ($Discount_type == 2) {
-                                                    $item_total_new = $item_Retail_price_new - (($item_Retail_price_new) * ($row_new['Discount'] / 100));
+                                                    $item_total_new = (float) $item_Retail_price_new - (((float) $item_Retail_price_new) * ((float) $row_new['Discount'] / 100));
                                                 } else {
-                                                    $item_total_new = $item_Retail_price_new;
+                                                    $item_total_new = (float) $item_Retail_price_new;
                                                 }
 
                                                 if ($_GET['item_type'] == $prefix . "_offers_inv") {
@@ -426,11 +426,11 @@ if (isset($_GET['cat_show'])) {
                                                             $item_Retail_price_new = $row_new['subprice'];
                                                         }
                                                         if ($Discount_type == 1) {
-                                                            $item_total_new = $item_Retail_price_new - $row_new['Discount'];
+                                                            $item_total_new = (float) $item_Retail_price_new - (float) $row_new['Discount'];
                                                         } else if ($Discount_type == 2) {
-                                                            $item_total_new = $item_Retail_price_new - (($item_Retail_price_new) * ($row_new['Discount'] / 100));
+                                                            $item_total_new = (float) $item_Retail_price_new - (((float) $item_Retail_price_new) * ((float) $row_new['Discount'] / 100));
                                                         } else {
-                                                            $item_total_new = $item_Retail_price_new;
+                                                            $item_total_new = (float) $item_Retail_price_new;
                                                         }
                                                         if ($_GET['item_type'] == $prefix . "_offers_inv") {
                                                             $item_status = 'offers';
@@ -905,7 +905,7 @@ if (isset($_GET['cat_show'])) {
                                     <div style="width:100%; margin:0 auto; text-align:center; float:right; text-align:center;">
 
                                         <?php
-                                        $result_cat = mysqli_query($con, "SELECT * FROM products where rank!='0' and rank!='' and id>0  order by rank ASC");
+                                        $result_cat = mysqli_query($con, "SELECT * FROM products where `rank`!='0' and `rank`!='' and id>0  order by `rank` ASC");
                                         if (@mysqli_num_rows($result_cat) >= 1) {
                                             while ($row_cat = mysqli_fetch_array($result_cat)) {
                                                 if ($row_cat['id'] == $db_cat_items_show) {

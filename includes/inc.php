@@ -1044,6 +1044,7 @@ function get_order_supply_data($id, $type)
         while ($row = mysqli_fetch_array($result)) {
             $data['id'] = $row['id'];
             $data['branch_id'] = $row['branch_id'];
+            $data['centers_id'] = $row['centers_id'];
             $data['inv_id'] = $row['inv_id'];
             $data['client'] = $row['client'];
             $data['address'] = $row['address'];

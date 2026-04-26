@@ -24,12 +24,12 @@ if (isset($_POST['ch_status']) and $_POST['ch_status']=='chngeQ') {
             $DiscountValue=$Discount;
         } else if ($Discount_type==2) {
             if($Discount==0){$DiscountValue=$Discount;}else{
-                $DiscountValue=($quantity * $Price) * ($Discount/100);
+                $DiscountValue=((float) $quantity * (float) $Price) * ((float) $Discount/100);
             }
         } else {
             $DiscountValue=$Discount;
         }
-        $Total= ($quantity*$Price)-$DiscountValue;
+        $Total= ((float) $quantity*(float) $Price)-(float) $DiscountValue;
 
         if($quantity>0){
             mysqli_query($con, "UPDATE ".$prefix."_receivings_temporary SET  Quantity='".$quantity."',unit='".$unit."',Price='".$BuyPrice."',Discount='".$Discount."',Total='".$Total."',type='1',BuyPrice='".$Price."',color='".$color."',size='".$size."',user_id='$user_id' where  id='".$row_up['id']."'");
@@ -69,10 +69,11 @@ if ($_GET['q']=="d") {
                 $item_price_new = $row_new['price'];
 
                 if ($Discount_type == 1) {
-                    $item_total_new = $row_new['price'] - $row_new['Discount'];
+                    $item_total_new = (float) $row_new['price'] - (float) $row_new['Discount'];
                 } else if ($Discount_type == 2) {
-                    $item_total_new = $row_new['price'] - (($row_new['price']) * ($row_new['Discount'] / 100));
-                } else {$item_total_new = $row_new['price'];
+                    $item_total_new = (float) $row_new['price'] - (((float) $row_new['price']) * ((float) $row_new['Discount'] / 100));
+                } else {
+                    $item_total_new = (float) $row_new['price'];
                 }
                 $sql = "INSERT INTO ".$prefix."_receivings_temporary (item, Price, Quantity, unit, Discount, Total, type, date, BuyPrice, subqty, size ,color, user_id)
 VALUES ('".$item_id_new."','".$item_Retail_price_new."','1','1','".$row_new['Discount']."','".$item_total_new."','1','".$DueDate."','".$item_price_new."','".$item_subqty_new."','" . $get_barcode_size . "','" . $get_barcode_color . "','".$user_id."')";

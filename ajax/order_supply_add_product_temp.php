@@ -42,13 +42,13 @@ if (isset($_POST['ch_status']) and $_POST['ch_status']=='chngeQ') {
             if ($Discount == 0) {
                 $DiscountValue = $Discount;
             } else {
-                $DiscountValue = ($quantity * $Price) * ($Discount / 100);
+                $DiscountValue = ((float) $quantity * (float) $Price) * ((float) $Discount / 100);
             }
         }
         else {
             $DiscountValue = $Discount;
         }
-        $Total = ($quantity * $Price) - $DiscountValue;
+        $Total = ((float) $quantity * (float) $Price) - (float) $DiscountValue;
 
         if ($quantity != 0 or $quantity != "") {
             $staff = $staff ?? 0;
@@ -116,11 +116,11 @@ else {
                             $item_Retail_price_new = $row_new['subprice'];
                         }
                         if ($Discount_type == 1) {
-                            $item_total_new = $item_Retail_price_new - $row_new['Discount'];
+                            $item_total_new = (float) $item_Retail_price_new - (float) $row_new['Discount'];
                         } else if ($Discount_type == 2) {
-                            $item_total_new = $item_Retail_price_new - (($item_Retail_price_new) * ($row_new['Discount'] / 100));
+                            $item_total_new = (float) $item_Retail_price_new - (((float) $item_Retail_price_new) * ((float) $row_new['Discount'] / 100));
                         } else {
-                            $item_total_new = $item_Retail_price_new;
+                            $item_total_new = (float) $item_Retail_price_new;
                         }
                         $centers_id_post = $_POST['centers_id'] == '' ? 0 : $_POST['centers_id'];
 

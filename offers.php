@@ -843,7 +843,7 @@ SELECT Quantity  ,date,inv_id,item,user_id from " . $prefix . "_offers_temporary
                             <div style="width:100%; margin:0 auto; text-align:center; float:right; text-align:center;">
 
                                 <?php
-                                $result_cat = mysqli_query($con, "SELECT * FROM products where rank!='0' and rank!='' and id>0  order by rank ASC");
+                                $result_cat = mysqli_query($con, "SELECT * FROM products where `rank`!='0' and `rank`!='' and id>0  order by `rank` ASC");
                                 if (@mysqli_num_rows($result_cat) >= 1) {
                                     while ($row_cat = mysqli_fetch_array($result_cat)) {
                                         if ($row_cat['id'] == $db_cat_items_show) {
