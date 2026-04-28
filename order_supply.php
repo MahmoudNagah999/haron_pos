@@ -227,8 +227,7 @@ if ($_POST['inv_tax'] == '1') {
 
                                 <?php echo "$Bill_of_order_supply_lang"; ?>
                             </div>
-                            <div
-                                style="width:100%; padding-top:0px; text-align:center; margin:0 auto;border:0px dashed #CCC; border-radius:5px; height:290px; overflow:auto;">
+                            <div class="invoice-items-container">
                                 <?php
                                 if ($report_suspend == "1") {
                                     echo '<div style="text-align:center; background-color:#E18C80; border-radius:5px;">
@@ -777,7 +776,7 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                                     //                                        ?><!-- -->
                                     <div id="ajaxRes">
                                     </div>
-                                    <table border="1"
+                                    <table border="1" class="modern-table"
                                         style="font-size:16px; width:100%;  direction:rtl; border:1px; border-collapse:collapse; margin-top:10px; text-align:center;">
 
                                         <thead style="background-color:#0076EA; color:#fff;">
@@ -1231,7 +1230,7 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                     </div>
 
                     <div style="width:100%;border:1px solid #CCC; border-radius:5px;">
-                        <div style="height:500px; overflow:auto;">
+                        <div class="product-selection-container">
                             <script>
                                 window.onload = function () {
                                     <?php
@@ -1289,7 +1288,7 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                                         echo '
 
 <span id="allCategories">
-<a class="addProd" par="cat_show" attr="0" ><i class="fa fa-list" title="' . $All_groups_lang . '"></i></a></span>';
+<a class="addProd all-categories-btn" par="cat_show" attr="0" ><i class="fa fa-list" title="' . $All_groups_lang . '"></i></a></span>';
                                     }
                                     ?>
                                 </div>
@@ -1304,32 +1303,22 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                                     <?php if ($db_cat_items_show > 0) {
 
                                     } else { ?>
-                                        <div style="width:100%; margin:0 auto; text-align:center; float:right; text-align:center;">
+                                        <div class="categories-wrapper">
 
                                             <?php
                                             $result_cat = mysqli_query($con, "SELECT * FROM products where `rank` != '0' and `rank` != '' and id > 0  order by `rank` ASC");
                                             if (@mysqli_num_rows($result_cat) >= 1) {
                                                 while ($row_cat = mysqli_fetch_array($result_cat)) {
-                                                    if ($row_cat['id'] == $db_cat_items_show) {
-                                                        $class = "draggable-demo-product3";
-                                                    } else {
-                                                        $class = "draggable-demo-product2";
-                                                    }
+                                                    $class = ($row_cat['id'] == $db_cat_items_show) ? "draggable-demo-product3" : "draggable-demo-product2";
+                                                    echo "<div class='$class'>
+                                                            <div class='draggable-demo-product-header'>
+                                                                <a class='addProd' par='cat_show' attr='" . $row_cat['id'] . "'>";
                                                     if ($row_cat['useimage'] == 1) {
-                                                        echo "<div class=\"" . $class . " jqx-rc-all\" style='background-color:" . $row_cat['background'] . ";'>
-							<div class=\"jqx-rc-t draggable-demo-product-header jqx-widget-header-theme1 jqx-fill-state-normal-theme\" >
-<a  class='addProd' par='cat_show' attr='" . $row_cat['id'] . "' class='a_cat_underlines'><img src=\"uploads/" . $row_cat['image'] . "\" class=\"img-responsive\" width=\"115\" height=\"30\" /></a></div>
-
-							</div>";
-
+                                                        echo "<img src='uploads/" . $row_cat['image'] . "' class='img-responsive' style='max-height:35px;' />";
                                                     } else {
-                                                        echo "<div   class=\"" . $class . " jqx-rc-all\" style='background-color:" . $row_cat['background'] . ";'>
-							<div class=\"jqx-rc-t draggable-demo-product-header jqx-widget-header-theme1 jqx-fill-state-normal-theme\" >
-							<div class=\"draggable-demo-product-header-label\"> <a  class='addProd' par='cat_show' attr='" . $row_cat['id'] . "'>" . $row_cat['product_name'] . "</a></div></div>
-
-							</div>";
-
+                                                        echo $row_cat['product_name'];
                                                     }
+                                                    echo "</a></div></div>";
                                                 }
                                             }
                                             ?>
@@ -1350,7 +1339,7 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                                 //   if ($db_cat_items_show == 0 or $db_cat_items_show == null or $db_cat_items_show == "") {
                                 //   $query = "SELECT COUNT(*) as num  FROM  items where OrderNo!='0' and OrderNo!=''  order by OrderNo ASC";
                                 //   } else {
-                                $query = "SELECT COUNT(*) as num  FROM  items  where OrderNo !='0' and OrderNo!='' and groupid=" . $db_cat_items_show . " order by OrderNo ASC";
+                                $query = "SELECT COUNT(*) as num  FROM  items  where OrderNo !='0' and OrderNo!='' and groupid=" . $db_cat_items_show . " AND id NOT IN(".get_hide_items().") order by OrderNo ASC";
                                 //  }
                                 $total_pages = @mysqli_fetch_array(mysqli_query($con, $query));
                                 $total_pages = $total_pages['num'];
@@ -1372,8 +1361,8 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                                 } else {
                                     $limit = 100;
                                 }
-                                $page = $_GET['page'];
-                                if ($page)
+                                $page = (int)($_GET['page'] ?? 0);
+                                if ($page > 0)
                                     $start = ($page - 1) * $limit;
                                 //first item to display on this page
                                 else
@@ -1384,7 +1373,7 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                                 //   if ($db_cat_items_show == 0 or $db_cat_items_show == null or $db_cat_items_show == "") {
                                 //      $sql = "SELECT * FROM items where OrderNo!='0' and OrderNo!='' order by OrderNo ASC";
                                 //   } else {
-                                $sql = "SELECT * FROM items where OrderNo!='0' and OrderNo!='' and groupid=" . $db_cat_items_show . "  order by OrderNo ASC";
+                                $sql = "SELECT * FROM items where OrderNo!='0' and OrderNo!='' and groupid=" . $db_cat_items_show . " AND id NOT IN(".get_hide_items().")  order by OrderNo ASC";
                                 //                                        $sql = "SELECT * FROM cairo_offers_inv order by id ASC";
                             
                                 //      }
@@ -1393,13 +1382,13 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                                 if ($page == 0)
                                     $page = 1;
                                 //if no page var is given, default to 1.
-                                $prev = $page - 1;
+                                $prev = (int)$page - 1;
                                 //previous page is page - 1
-                                $next = $page + 1;
+                                $next = (int)$page + 1;
                                 //next page is page + 1
-                                $lastpage = ceil($total_pages / $limit);
+                                $lastpage = (int)ceil($total_pages / $limit);
                                 //lastpage is = total pages / items per page, rounded up.
-                                $lpm1 = $lastpage - 1;
+                                $lpm1 = (int)$lastpage - 1;
                                 //last page minus 1
                             
                                 /*
@@ -1474,24 +1463,22 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                                 }
                                 ###############
                                 while ($row = @mysqli_fetch_array($result)) {
-
-                                    if ($row['image'] == null or $row['useimage'] == 0) {
-                                        ###################
-                                        $qty_it = GetQuantity($row['id'], '1');
-                                        echo "<div title= '$qty_it' class=\"draggable-demo-product jqx-rc-all\"  style='background-color:" . $row['Background'] . ";'>
-							<div class=\"jqx-rc-t draggable-demo-product-header jqx-widget-header-theme1 jqx-fill-state-normal-theme\" >
-							<div class=\"draggable-demo-product-header-label\" style='background-color:#fff;'> <a class='addProd' data_item_type='items'  par='q' attr='" . $row['id'] . "'>" . $row['item'] . "</a></div></div>
-
-							</div>";
-
-                                    } else {
-                                        echo "<div class=\"draggable-demo-product jqx-rc-all\" title='$qty_it'>
-							<div class=\"jqx-rc-t draggable-demo-product-header jqx-widget-header-theme1 jqx-fill-state-normal-theme\">
-							<div class=\"draggable-demo-product-header-label\"><a class='addProd' data_item_type='items'  par='q' attr='" . $row['id'] . "'>" . $row['item'] . "</a></div></div>
-
-							<a class='addProd' data_item_type='items' par='q' attr='" . $row['id'] . "'><img src=\"uploads/" . $row['image'] . "\" class=\"img-responsive\" width=\"115\" height=\"100\" /></a>
-							</div>";
+                                    $qty_it = GetQuantity($row['id'], '1');
+                                    $bg_style = $row['Background'] ? "style='background-color:" . $row['Background'] . ";'" : "";
+                                    
+                                    echo "<div class='draggable-demo-product' title='$qty_it' $bg_style>";
+                                    echo "<div class='draggable-demo-product-header'>
+                                            <div class='draggable-demo-product-header-label'>
+                                                <a class='addProd' data_item_type='items' par='q' attr='" . $row['id'] . "'>" . $row['item'] . "</a>
+                                            </div>
+                                          </div>";
+                                          
+                                    if ($row['image'] != null and $row['useimage'] == 1) {
+                                        echo "<a class='addProd' data_item_type='items' par='q' attr='" . $row['id'] . "'>
+                                                <img src='uploads/" . $row['image'] . "' class='img-responsive' style='height:100px; width:100%; object-fit:cover;' />
+                                              </a>";
                                     }
+                                    echo "</div>";
                                 }
                                 ?>
 
@@ -1594,12 +1581,15 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
 
     $(document).on("click", '.addProd', function () {
         // alert('hereeeee class add prod');
-        var par = $(this).attr('par');
+        var $btn = $(this);
+        var par = $btn.attr('par');
+        var parAttr = $btn.attr('attr');
+        var itemType = $btn.attr('data_item_type');
         var dataaaa = $('#inv_form').serialize();
         // alert($(this).attr('data_item_type'));
         if (par == 'q') {
             $.ajax({
-                url: 'ajax/order_supply_add_product_temp.php?q=' + $(this).attr('attr') + "&item_status=" + $(this).attr('data_item_type'),
+                url: 'ajax/order_supply_add_product_temp.php?q=' + parAttr + "&item_status=" + itemType,
                 dataType: 'text',
                 type: 'POST',
                 contentType: 'application/x-www-form-urlencoded',
@@ -1609,7 +1599,7 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
 
                     $('#tablee').html(data['table']);
                     $('#ajaxRes').html(data['status']);
-                    $('#item_type_val').val($(this).attr('data_item_type'));
+                    $('#item_type_val').val(itemType);
                 },
                 error: function (jqXhr, textStatus, errorThrown) {
                     console.log(errorThrown);
@@ -1622,12 +1612,12 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                     dataType: 'text',
                     type: 'GET',
                     contentType: 'application/x-www-form-urlencoded',
-                    data: { 'del': $(this).attr('attr'), 'item_status': $(this).attr('data_item_type') },
+                    data: { 'del': parAttr, 'item_status': itemType },
                     success: function (data, textStatus, jQxhr) {
                         data = JSON.parse(data);
                         $('#tablee').html(data['table']);
                         $('#ajaxRes').html(data['status']);
-                        $('#item_type_val').val($(this).attr('data_item_type'));
+                        $('#item_type_val').val(itemType);
 
                     },
                     error: function (jqXhr, textStatus, errorThrown) {
@@ -1642,14 +1632,14 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                         dataType: 'text',
                         type: 'GET',
                         contentType: 'application/x-www-form-urlencoded',
-                        data: { 'cat_show': $(this).attr('attr') },
+                        data: { 'cat_show': parAttr },
                         success: function (data, textStatus, jQxhr) {
                             data = JSON.parse(data);
                             $('#items').html(data['items']);
                             if (parAttr == 0) {
                                 $('#allCategories').html('');
                             } else {
-                                $('#allCategories').html('<a class="addProd" par="cat_show" attr="0" ><i class="fa fa-list" title="<?php echo $All_groups_lang; ?>"></i></a>');
+                                $('#allCategories').html('<a class="addProd all-categories-btn" par="cat_show" attr="0" ><i class="fa fa-list" title="<?php echo $All_groups_lang; ?>"></i></a>');
                             }
                         },
                         error: function (jqXhr, textStatus, errorThrown) {

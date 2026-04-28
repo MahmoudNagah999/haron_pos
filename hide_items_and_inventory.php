@@ -1,4 +1,4 @@
-﻿<?php include "includes/inc.php"; ?>
+<?php include "includes/inc.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -373,8 +373,8 @@ header("refresh:1;url=items_and_inventory.php?groups=".$_GET['groups']."&search=
                                     $result_getbalance = mysqli_query($con, "SELECT Quantity,subqty FROM items where id='" . $_GET['Edit'] . "'");
                                     if (@mysqli_num_rows($result_getbalance) > 0) {
                                         while ($row_getbalance = mysqli_fetch_array($result_getbalance)) {
-                                            $totalgetbalance = $row_getbalance['Quantity'];
-                                            $totalgetsubqty = $row_getbalance['subqty'];
+                                            $totalgetbalance = (float)$row_getbalance['Quantity'];
+                                            $totalgetsubqty = (float)$row_getbalance['subqty'];
                                         }
                                     }
 ############################
@@ -384,7 +384,7 @@ header("refresh:1;url=items_and_inventory.php?groups=".$_GET['groups']."&search=
                                     //LEFT JOIN receivings t2 ON t1.inv_id=t2.inv_id AND t1.item=t2.item AND t1.Quantity=t2.Quantity AND t1.SupplierID=t2.SupplierID AND t1.date=t2.date";	
                                     $resultalast = @mysqli_query($con, $sqlalast);
                                     while ($rowalast = @mysqli_fetch_array($resultalast)) {
-                                        $Quantitytotallast+=$rowalast['Quantity'];
+                                        $Quantitytotallast+= (float)$rowalast['Quantity'];
                                     }
 ####################
                                     $Quantitytotala = $totalgetbalance + $Quantitytotallast;
@@ -393,7 +393,7 @@ header("refresh:1;url=items_and_inventory.php?groups=".$_GET['groups']."&search=
                                     //	$all_qty00=round((($Quantitytotala-$whole00)*$totalgetsubqty));
 
                                     $NumberBreakdown00 = NumberBreakdown($Quantitytotala, $returnUnsigned = false);
-                                    $all_qty00 = (abs($NumberBreakdown00[1]) * $totalgetsubqty);
+                                    $all_qty00 = (abs($NumberBreakdown00[1]) * (float)$totalgetsubqty);
                                     $whole00 = $NumberBreakdown00[0];
 
                                     echo'<span style="color:#F00;">' . $whole00 . ',' . round($all_qty00) . ' </span>';
@@ -642,7 +642,7 @@ header("refresh:1;url=items_and_inventory.php?groups=".$_GET['groups']."&search=
                                 $query = "SELECT COUNT(*) as num  FROM  items where id  IN(".get_hide_items().") order by $orderby $type";
                             } else {
                                 if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                                    $query = "SELECT COUNT(*) as num  FROM  items where id  IN(".get_hide_items().") and  groupid='" . $_GET['groups'] . "' and companies=='" . $_GET['companies'] . "' order by $orderby $type";
+                                    $query = "SELECT COUNT(*) as num  FROM  items where id  IN(".get_hide_items().") and  groupid='" . $_GET['groups'] . "' and companies='" . $_GET['companies'] . "' order by $orderby $type";
                                 } else {
                                     $query = "SELECT COUNT(*) as num  FROM  items  where id  IN(".get_hide_items().") and groupid='" . $_GET['groups'] . "'  order by $orderby $type";
                                 }
@@ -669,8 +669,8 @@ header("refresh:1;url=items_and_inventory.php?groups=".$_GET['groups']."&search=
                         } else {
                             $limit = $items_per_page;
                         }
-                        $page = $_GET['page'];
-                        if ($page)
+                        $page = (int)($_GET['page'] ?? 0);
+                        if ($page > 0)
                             $start = ($page - 1) * $limit;    //first item to display on this page
                         else
                             $start = 0;        //if no page var is given, set start to 0
@@ -793,10 +793,10 @@ header("refresh:1;url=items_and_inventory.php?groups=".$_GET['groups']."&search=
                         /* Setup page vars for display. */
                         if ($page == 0)
                             $page = 1;     //if no page var is given, default to 1.
-                        $prev = $page - 1;       //previous page is page - 1
-                        $next = $page + 1;       //next page is page + 1
-                        $lastpage = ceil($total_pages / $limit);  //lastpage is = total pages / items per page, rounded up.
-                        $lpm1 = $lastpage - 1;      //last page minus 1
+                        $prev = (int)$page - 1;       //previous page is page - 1
+                        $next = (int)$page + 1;       //next page is page + 1
+                        $lastpage = (int)ceil($total_pages / $limit);  //lastpage is = total pages / items per page, rounded up.
+                        $lpm1 = (int)$lastpage - 1;      //last page minus 1
 
                         /*
                           Now we apply our rules and draw the pagination object.
@@ -887,9 +887,9 @@ header("refresh:1;url=items_and_inventory.php?groups=".$_GET['groups']."&search=
                             } else {
                                 $class = 'background_color_D5EFF0';
                             }
-                            $all_qty0 = ($row['Quantity'] + GetQuantity($row['id']));
+                            $all_qty0 = ((float)$row['Quantity'] + GetQuantity($row['id']));
                             $NumberBreakdown = NumberBreakdown($all_qty0, $returnUnsigned = false);
-                            $all_qty = (abs($NumberBreakdown[1]) * $row['subqty']);
+                            $all_qty = (abs((float)$NumberBreakdown[1]) * (float)$row['subqty']);
                             $whole = $NumberBreakdown[0];
                             ?>
 

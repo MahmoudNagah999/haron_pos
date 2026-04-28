@@ -24,17 +24,20 @@ if (isset($_POST['ch_status']) and $_POST['ch_status']=='chngeQ') {
     while ($row_up = mysqli_fetch_array($result_up)) {
 
         $row_up['id'];
-        $item = $_POST[item . $row_up['id']];
-        $quantity = $_POST[quantity . $row_up['id']];
+        $item = $_POST['item' . $row_up['id']];
+        $quantity = $_POST['quantity' . $row_up['id']];
+        if(GetQuantity($item,'1')>=$quantity){}else{
+            $quantity=GetQuantity($item,'1');
+        }
 
-        $Price = $_POST[price . $row_up['id']];
-        $staff = $_POST[staff . $row_up['id']];
-        $Discount = $_POST[discount . $row_up['id']];
+        $Price = $_POST['price' . $row_up['id']];
+        $staff = $_POST['staff' . $row_up['id']];
+        $Discount = $_POST['discount' . $row_up['id']];
 
-        $BuyPrice = $_POST[BuyPrice . $row_up['id']];
-        $order_supply_type = $_POST[order_supply_type . $row_up['id']];
-        $size = $_POST[size . $row_up['id']];
-        $color = $_POST[color . $row_up['id']];
+        $BuyPrice = $_POST['BuyPrice' . $row_up['id']];
+        $order_supply_type = $_POST['order_supply_type' . $row_up['id']];
+        $size = $_POST['size' . $row_up['id']];
+        $color = $_POST['color' . $row_up['id']];
         if ($Discount_type == 1) {
             $DiscountValue = $Discount;
         }
@@ -194,6 +197,7 @@ else {
 
 
 $data['table']='';
+$sumTotal = 0;
 $sql = "SELECT * FROM " . $prefix . "_order_supply_temporary where user_id='$user_id' order by id DESC";
 $result = @mysqli_query($con, $sql);
 $tbl_name = "" . $prefix . "order_supply_temporary";
@@ -242,7 +246,7 @@ while ($row = @mysqli_fetch_array($result)) {
     if ($item_Discount == null) {
         $item_Discount = 0;
     }
-    $sumTotal+= $row['Total'];
+    $sumTotal+= (float)$row['Total'];
     ###########
     #############تحديث سعر البيع#####
     if ($Update_SellBuyPrice == 1) {
@@ -373,10 +377,11 @@ if ($sumTotal == null) {
         }
     }
 
+    $print_total_disc = 0;
     if ($Discount_type == 2) {
-        $print_total_disc = $sumTotal * $_POST['alldiscount'] / 100;
+        $print_total_disc = (float)$sumTotal * (float)$_POST['alldiscount'] / 100;
     } else if ($Discount_type == 1) {
-        $print_total_disc = $_POST['alldiscount'];
+        $print_total_disc = (float)$_POST['alldiscount'];
     } else {
     }
 //    var_dump($_POST['alldiscount']);
@@ -385,13 +390,13 @@ if ($sumTotal == null) {
                             </tr>';
 }
 
-          if($_POST['shipping']>0){
+          if((float)$_POST['shipping']>0){
           $data['table'].="<tr>";
      $data['table'].='<td  colspan="4">م.النقل</td>
                             <td><font style="color:#060; font-weight:bold;">'.$_POST['shipping'].'</font></td><td></td>
                             </tr>';
         $data['table'].='<tr><td  colspan="4">الاجمالى بعد م.النقل</td>
-                            <td><font style="color:#060; font-weight:bold;">'.(($sumTotal-$print_total_disc)+$_POST['shipping']).'</font></td><td></td>
+                            <td><font style="color:#060; font-weight:bold;">'.(($sumTotal-(float)$print_total_disc)+(float)$_POST['shipping']).'</font></td><td></td>
                             </tr>';
     }
 

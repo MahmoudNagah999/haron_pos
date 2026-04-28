@@ -38,7 +38,7 @@ if (!isset($_GET['order_id'])) {
     $_GET['order_user_id']='';
     $_GET['order_id']='';
 }
-$result_search_clients = mysqli_query($con,"SELECT * FROM items  WHERE item LIKE '%$ser%' or id='$ser' or Barcode='$ser' limit 0,20");
+$result_search_clients = mysqli_query($con,"SELECT * FROM items  WHERE (item LIKE '%$ser%' or id='$ser' or Barcode='$ser') AND id NOT IN(".get_hide_items().") limit 0,20");
 if(@mysqli_num_rows($result_search_clients)>0){
 	$i=1;
 while($row_search_clients = mysqli_fetch_array($result_search_clients))

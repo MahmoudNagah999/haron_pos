@@ -164,8 +164,7 @@ if (isset($_GET['cat_show'])) {
                             <div id="livesearchcl"
                                 style="z-index:1000000000; width:45%;  text-align:right; margin-top:30px;  float:right; position:fixed; border:0px; ">
                             </div>
-                            <div
-                                style="width:100%; padding-top:0px; text-align:center; margin:0 auto;border:0px dashed #CCC; border-radius:5px; height:290px; overflow:auto;">
+                            <div class="invoice-items-container">
                                 <?php
                                 if (($_POST['submit']) == $Save_lang and $_POST['submit'] != null) {
                                     ###################################
@@ -829,7 +828,7 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                                         </div>
                                     </div>
                             </div>
-                            <table border="1"
+                            <table border="1" class="modern-table"
                                 style="font-size:16px; width:100%;  direction:rtl; border:1px; border-collapse:collapse; margin-top:10px; text-align:center;">
 
                                 <thead style="background-color:#0076EA; color:#fff;">
@@ -852,7 +851,7 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                                     <th class="text-center"><?php echo "$the_total_lang"; ?></th>
                                     <th class="text-center"><?php echo "$Delete_lang"; ?></th>
                                 </thead>
-                                <tbody>
+                                <tbody id="tablee">
                                     <?php
                                     $tbl_name = "" . $prefix . "order_supply";
                                     //your table name
@@ -882,10 +881,10 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                                             $limit = 20;
                                         }
                                     } else {
-                                        $limit = 100;
+                                        $limit = (int) ($limit ?? 100);
                                     }
-                                    $page = $_GET['page'];
-                                    if ($page)
+                                    $page = (int) ($_GET['page'] ?? 0);
+                                    if ($page > 0)
                                         $start = ($page - 1) * $limit;
                                     //first item to display on this page
                                     else
@@ -1204,8 +1203,8 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                     <input type="hidden" name="inv" value="order_supply" />
                     </form>
                 </div>
-                <div style="width:100%;border:1px solid #CCC; border-radius:5px;">
-                    <div style="height:500px; overflow:auto;">
+                <div class="product-selection-container">
+                    <div>
                         <script>
                             window.onload = function () {
                                 document.getElementById("barcode").focus();
@@ -1245,7 +1244,7 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                                 if ($db_cat_items_show == 0 or $db_cat_items_show == null or $db_cat_items_show == "") {
 
                                 } else {
-                                    echo '<a href="?id=' . $_GET['id'] . '&cat_show=0"><i class="fa fa-list" title="' . $All_groups_lang . '"></i></a>';
+                                    echo '<a class="all-categories-btn" href="?id=' . $_GET['id'] . '&cat_show=0"><i class="fa fa-list" title="' . $All_groups_lang . '"></i></a>';
                                 }
                                 ?>
                             </div>
@@ -1258,32 +1257,22 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                             <?php if ($db_cat_items_show > 0) {
 
                             } else { ?>
-                                <div style="width:100%; margin:0 auto; text-align:center; float:right; text-align:center;">
+                                <div class="categories-wrapper">
 
                                     <?php
                                     $result_cat = mysqli_query($con, "SELECT * FROM products where `rank`!='0' and `rank`!='' and id>0  order by `rank` ASC");
                                     if (@mysqli_num_rows($result_cat) >= 1) {
                                         while ($row_cat = mysqli_fetch_array($result_cat)) {
-                                            if ($row_cat['id'] == $db_cat_items_show) {
-                                                $class = "draggable-demo-product3";
-                                            } else {
-                                                $class = "draggable-demo-product2";
-                                            }
+                                            $class = ($row_cat['id'] == $db_cat_items_show) ? "draggable-demo-product3" : "draggable-demo-product2";
+                                            echo "<div class='$class'>
+                                                    <div class='draggable-demo-product-header'>
+                                                        <a href='?id=" . $_GET['id'] . "&cat_show=" . $row_cat['id'] . "'>";
                                             if ($row_cat['useimage'] == 1) {
-                                                echo "<div class=\"" . $class . " jqx-rc-all\" style='background-color:" . $row_cat['background'] . ";'>
-							<div class=\"jqx-rc-t draggable-demo-product-header jqx-widget-header-theme1 jqx-fill-state-normal-theme\" >
-<a href=\"?id=" . $_GET['id'] . "&cat_show=" . $row_cat['id'] . "\" class='a_cat_underlines'><img src=\"uploads/" . $row_cat['image'] . "\" class=\"img-responsive\" width=\"115\" height=\"30\" /></a></div>
-
-							</div>";
-
+                                                echo "<img src='uploads/" . $row_cat['image'] . "' class='img-responsive' style='max-height:35px;' />";
                                             } else {
-                                                echo "<div   class=\"" . $class . " jqx-rc-all\" style='background-color:" . $row_cat['background'] . ";'>
-							<div class=\"jqx-rc-t draggable-demo-product-header jqx-widget-header-theme1 jqx-fill-state-normal-theme\" >
-							<div class=\"draggable-demo-product-header-label\"> <a href=\"?id=" . $_GET['id'] . "&cat_show=" . $row_cat['id'] . "\">" . $row_cat['product_name'] . "</a></div></div>
-
-							</div>";
-
+                                                echo $row_cat['product_name'];
                                             }
+                                            echo "</a></div></div>";
                                         }
                                     }
                                     ?>
@@ -1305,7 +1294,7 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                             //   if ($db_cat_items_show == 0 or $db_cat_items_show == null or $db_cat_items_show == "") {
                             //   $query = "SELECT COUNT(*) as num  FROM  items where OrderNo!='0' and OrderNo!=''  order by OrderNo ASC";
                             //   } else {
-                            $query = "SELECT COUNT(*) as num  FROM  items  where OrderNo!='0' and OrderNo!='' and groupid=" . $db_cat_items_show . " order by OrderNo ASC";
+                            $query = "SELECT COUNT(*) as num  FROM  items  where OrderNo!='0' and OrderNo!='' and groupid=" . $db_cat_items_show . " AND id NOT IN(".get_hide_items().") order by OrderNo ASC";
                             //  }
                             $total_pages = @mysqli_fetch_array(mysqli_query($con, $query));
                             $total_pages = $total_pages['num'];
@@ -1319,16 +1308,9 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                             } else {
 
                             }
-                            if (!empty($_SESSION['limit'])) {
-                                $limit = $_SESSION['limit'];
-                                if ($limit > 100) {
-                                    $limit = 20;
-                                }
-                            } else {
-                                $limit = 100;
-                            }
-                            $page = $_GET['page'];
-                            if ($page)
+                            $limit = (int) ($limit ?? 100);
+                            $page = (int) ($_GET['page'] ?? 0);
+                            if ($page > 0)
                                 $start = ($page - 1) * $limit;
                             //first item to display on this page
                             else
@@ -1339,7 +1321,7 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                             //   if ($db_cat_items_show == 0 or $db_cat_items_show == null or $db_cat_items_show == "") {
                             //      $sql = "SELECT * FROM items where OrderNo!='0' and OrderNo!='' order by OrderNo ASC";
                             //   } else {
-                            $sql = "SELECT * FROM items where OrderNo!='0' and OrderNo!='' and groupid=" . $db_cat_items_show . "  order by OrderNo ASC";
+                            $sql = "SELECT * FROM items where OrderNo!='0' and OrderNo!='' and groupid=" . $db_cat_items_show . " AND id NOT IN(".get_hide_items().")  order by OrderNo ASC";
                             //      }
                             $result = @mysqli_query($con, $sql);
                             /* Setup page vars for display. */
@@ -1427,29 +1409,19 @@ Total='" . $Total . "',type='1',BuyPrice='" . $BuyPrice . "',order_supply_type='
                             }
                             ###############
                             while ($row = @mysqli_fetch_array($result)) {
-
-                                if ($row['image'] == null or $row['useimage'] == 0) {
-                                    ###################
-                                    $qty_it = GetQuantity($row['id'], '1');
-                                    echo "<div title= '$qty_it' class=\"draggable-demo-product jqx-rc-all\"  style='background-color:" . $row['Background'] . ";'>
-							<div class=\"jqx-rc-t draggable-demo-product-header jqx-widget-header-theme1 jqx-fill-state-normal-theme\" >
-							<div class=\"draggable-demo-product-header-label\" style='background-color:#fff;'> <a href=\"?id=" . $_GET['id'] . "&q=" . $row['id'] . "\">" . $row['item'] . "</a></div></div>
-
-							</div>";
-                                    /* 	echo"<div class=\"draggable-demo-product jqx-rc-all\"  style='background-color:".$row['Background']."; height:50px;'>
-                                      <div class=\"jqx-rc-t draggable-demo-product-header jqx-widget-header-theme1 jqx-fill-state-normal-theme\" >
-                                      <div class=\"draggable-demo-product-header-label\" style='background-color:#fff;'> <a href=\"?q=".$row['id']."\">".$row['item']."</a></div></div>
-
-                                      </div>"; */
-                                    ###################
-                                } else {
-                                    echo "<div class=\"draggable-demo-product jqx-rc-all\" title='$qty_it'>
-							<div class=\"jqx-rc-t draggable-demo-product-header jqx-widget-header-theme1 jqx-fill-state-normal-theme\">
-							<div class=\"draggable-demo-product-header-label\"><a href=\"?id=" . $_GET['id'] . "&q=" . $row['id'] . "\">" . $row['item'] . "</a></div></div>
-
-							<a href=\"?id=" . $_GET['id'] . "&q=" . $row['id'] . "\"><img src=\"uploads/" . $row['image'] . "\" class=\"img-responsive\" width=\"115\" height=\"100\" /></a>
-							</div>";
+                                $qty_it = GetQuantity($row['id'], '1');
+                                echo "<div class='draggable-demo-product' title='$qty_it'>";
+                                echo "<div class='draggable-demo-product-header'>
+                                        <div class='draggable-demo-product-header-label'>
+                                            <a href='?id=" . $_GET['id'] . "&q=" . $row['id'] . "'>" . $row['item'] . "</a>
+                                        </div>
+                                      </div>";
+                                if ($row['image'] != null and $row['useimage'] == 1) {
+                                    echo "<a href='?id=" . $_GET['id'] . "&q=" . $row['id'] . "'>
+                                            <img src='uploads/" . $row['image'] . "' class='img-responsive' />
+                                          </a>";
                                 }
+                                echo "</div>";
                             }
                             ?>
 

@@ -1077,10 +1077,10 @@ VALUES ('" . $groups . "','" . $items . "','" . $date . "','" . $Quantity . "','
                         /* Setup page vars for display. */
                         if ($page == 0)
                             $page = 1;     //if no page var is given, default to 1.
-                        $prev = $page - 1;       //previous page is page - 1
-                        $next = $page + 1;       //next page is page + 1
-                        $lastpage = ceil($total_pages / $limit);  //lastpage is = total pages / items per page, rounded up.
-                        $lpm1 = $lastpage - 1;      //last page minus 1
+                        $prev = (int)$page - 1;       //previous page is page - 1
+                        $next = (int)$page + 1;       //next page is page + 1
+                        $lastpage = (int)ceil($total_pages / $limit);  //lastpage is = total pages / items per page, rounded up.
+                        $lpm1 = (int)$lastpage - 1;      //last page minus 1
                     
                         /*
                           Now we apply our rules and draw the pagination object.
