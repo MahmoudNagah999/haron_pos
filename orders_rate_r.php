@@ -336,6 +336,7 @@ $Total_final = array_sum($sumArray);
                 'W',
                 'Y'
             ];
+
             // $alphapatic = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']; ?>
             <div class="form-group mb-2">
                 <select id="Alpha" multiple="multiple" name="Alpha[]" size="1"

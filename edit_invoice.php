@@ -22,7 +22,7 @@ echo '<div class="alert alert-warning text-right">
                             </div>';
 				}else{
 // Check if button name "Submit" is active, do this
-$count=count($_POST['id']);
+$count = (is_array($_POST['id'])) ? count($_POST['id']) : 0;
 $Quantity=$_POST['Quantity'];
 $Discount=$_POST['Discount'];
 $Price=$_POST['Price'];

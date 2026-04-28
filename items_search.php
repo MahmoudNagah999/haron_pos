@@ -51,11 +51,12 @@ while($row_search_clients = mysqli_fetch_array($result_search_clients))
 				$class="item2";
 				}
 
-      $openQ = get_sum_product_store_data($row_search_clients['id'])[Quantity] ;
+      $sum_data = get_sum_product_store_data($row_search_clients['id']);
+      $openQ = (isset($sum_data['Quantity']) ? $sum_data['Quantity'] : 0);
 
       $all_qty0 = ($openQ + GetQuantity($row_search_clients['id']));
                             $NumberBreakdown = NumberBreakdown($all_qty0, $returnUnsigned = false);
-                            $all_qty = (abs($NumberBreakdown[1]) * $row_search_clients['subqty']);
+                            $all_qty = (abs($NumberBreakdown[1]) * (float)$row_search_clients['subqty']);
                             $whole = $NumberBreakdown[0];
                                 
                                 
@@ -84,7 +85,7 @@ if ($_GET['offers']) {
 
             $all_qty0 = '';
             $NumberBreakdown = NumberBreakdown($all_qty0, $returnUnsigned = false);
-            $all_qty = (abs($NumberBreakdown[1]) * $row_search_clients['subqty']);
+            $all_qty = (abs($NumberBreakdown[1]) * (float)$row_search_clients['subqty']);
             $whole = $NumberBreakdown[0];
 
 

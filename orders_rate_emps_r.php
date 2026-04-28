@@ -282,8 +282,7 @@ $Total_final = array_sum($sumArray);
                     echo "" . $_GET['date_to'] . "";
                 } else {
                     echo date("d/m/Y");
-                } ?>" class="form-control"
-                    placeholder="التاريخ الى" aria-label="التاريخ الى">
+                } ?>" class="form-control" placeholder="التاريخ الى" aria-label="التاريخ الى">
 
             </div>
             <script type="text/javascript">
@@ -297,8 +296,7 @@ $Total_final = array_sum($sumArray);
                     echo "" . $_GET['date_from'] . "";
                 } else {
                     echo date("01/m/2019");
-                } ?>" class="form-control"
-                    placeholder="التاريخ من" aria-label="التاريخ من">
+                } ?>" class="form-control" placeholder="التاريخ من" aria-label="التاريخ من">
                 <script type="text/javascript">
                     $('#date_from').dateEntry({
                         dateFormat: 'dmy/',
@@ -329,7 +327,15 @@ $Total_final = array_sum($sumArray);
 
             </div>
 
-            <?php $alphapatic = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']; ?>
+            <?php
+            $alphapatic = [
+                'P',
+                'C',
+                'i',
+                'W',
+                'Y'
+            ];
+            // $alphapatic = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']; ?>
             <div class="form-group mb-2">
                 <select id="Alpha" multiple="multiple" name="Alpha[]" size="1"
                     class="w100 placeholder-single_order_status js-states form-control">

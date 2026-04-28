@@ -96,12 +96,14 @@ while($row_suppliersq = mysqli_fetch_array($result_suppliersq))
     <td width="5%"><?php echo"$Debit_lang"; ?></td>
   </tr>
   <?php
+  $Totallast = 0;
+  $totalgetbalance = 0;
   $result_getw = mysqli_query($con,"SELECT * FROM ".$prefix."_receivings_inv where supplier='".$_GET['id']."' and left(date,10) < '$from'");
 
 if(mysqli_num_rows($result_getw)>0){
 while($row_getw = mysqli_fetch_array($result_getw))
   {
-	$Totallast+=$row_getw['Total'];
+	$Totallast+=(float)$row_getw['Total'];
   }
   }
   ######################
@@ -109,7 +111,7 @@ while($row_getw = mysqli_fetch_array($result_getw))
 if(@mysqli_num_rows($result_getbalance)>0){
 while($row_getbalance = mysqli_fetch_array($result_getbalance))
   {
-	$totalgetbalance=$row_getbalance['balance'];
+	$totalgetbalance=(float)$row_getbalance['balance'];
   }
 }
 ####################

@@ -42,9 +42,10 @@ if($_GET['del']!==null){
 ?>
      <?php
 
- $checkbox = $_POST['cb']; //from name="checkbox[]"
-$countCheck = count($_POST['cb']);
- for ($i=0; $i<=$countCheck; $i++) {
+  $checkbox = $_POST['cb']; //from name="checkbox[]"
+ $countCheck = (is_array($checkbox)) ? count($checkbox) : 0;
+ if($countCheck>0){
+  for ($i=0; $i<=$countCheck; $i++) {
 $del_id  = $checkbox[$i];
 mysqli_query($con,"DELETE FROM ".$prefix."_fawry WHERE id='".$del_id."'");
 if($i==$countCheck-1){
@@ -55,6 +56,7 @@ if($i==$countCheck-1){
 header("refresh:1;url=fawry_pay.php");
 	}
 		  }
+ }
  //
 /* if(mysqli_query($con,"DELETE FROM country_t WHERE  country_id='".$del_id."'")){
 #############

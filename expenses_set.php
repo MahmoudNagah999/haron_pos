@@ -66,8 +66,8 @@ if(mysqli_query($con,"DELETE FROM ".$prefix."_expenses_set WHERE id='".$_GET['de
 ?>
 <?php
 
- $checkbox = $_POST['cb']; //from name="checkbox[]"
-$countCheck = count($_POST['cb']);
+  $checkbox = $_POST['cb']; //from name="checkbox[]"
+ $countCheck = (is_array($checkbox)) ? count($checkbox) : 0;
 if($countCheck>0){
                      if($demo==1){
 echo '<div class="alert alert-warning text-right">

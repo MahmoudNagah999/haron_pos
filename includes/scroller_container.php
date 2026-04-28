@@ -6,12 +6,13 @@
                                             
 <?php
 function alert($id  , $subqty){
-    $openQ = get_sum_product_store_data($id)[Quantity] ;
+    $sum_data = get_sum_product_store_data($id);
+    $openQ = (isset($sum_data['Quantity']) ? $sum_data['Quantity'] : 0);
     $all_qty0 = ($openQ + GetQuantity($id,null ));
     $NumberBreakdown = NumberBreakdown($all_qty0, $returnUnsigned = false);
 //    var_dump($subqty);
 //    die('----------');
-    $all_qty = (abs($NumberBreakdown[0]) * $subqty);
+    $all_qty = (abs($NumberBreakdown[0]) * (float)$subqty);
 ####################
 return $all_qty ;
 	}

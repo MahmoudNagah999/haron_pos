@@ -22,9 +22,11 @@ if ($from !='' and $to!=''){
 $mobile1=stripslashes($_GET['mobile1']);
 $mobile2=stripslashes($_GET['mobile2']);
 $status_array = array();
-foreach ($_GET['status'] as $one_status){
-    if ($one_status!=''){
-        $status_array []= $one_status;
+if (is_array($_GET['status'])) {
+    foreach ($_GET['status'] as $one_status){
+        if ($one_status!=''){
+            $status_array []= $one_status;
+        }
     }
 }
 if (count($status_array) > 0){
@@ -36,7 +38,7 @@ else{
 }
 $inv=stripslashes($_GET['inv']);
 $branch = array();
-$branch=implode(',',$_GET['branch_id']); 
+$branch = (isset($_GET['branch_id']) && is_array($_GET['branch_id'])) ? implode(',',$_GET['branch_id']) : ''; 
 $UerID=stripslashes($_GET['UerID']);
 if($inv=="" or $inv==null){}else{$add_sql.="inv_id='$inv' and ";}
 if($user_branch_id && $user_branch_id > 0){$add_sql.="branch_id IN ($user_branch_id) and ";}
@@ -49,23 +51,25 @@ if ($_GET['region_id']!="null" and $_GET['region_id']!=null and $_GET['region_id
 //    $regions=explode(',',stripslashes($_GET['region_id']));
 
     $i =0 ;
-    foreach ($_GET['region_id'] as $region){
-        if($region=="" or $region==null){}else{
-            $region_childs = get_region_childs($region);
-            $region_childs=implode(',',$region_childs);
-            if ($i == 0){
-                $add_sql.=" ( ";
-                $add_sql.="    region_id IN ($region_childs )  ";
-            }else{
-                $add_sql.="  or   region_id IN ($region_childs )  ";
+    if (is_array($_GET['region_id'])) {
+        foreach ($_GET['region_id'] as $region){
+            if($region=="" or $region==null){}else{
+                $region_childs = get_region_childs($region);
+                $region_childs=implode(',',$region_childs);
+                if ($i == 0){
+                    $add_sql.=" ( ";
+                    $add_sql.="    region_id IN ($region_childs )  ";
+                }else{
+                    $add_sql.="  or   region_id IN ($region_childs )  ";
+                }
             }
+            $i++;
         }
-        $i++;
     }
     $add_sql.="   ) and   ";
 
 }
-$alpha_joins = join("','",$_GET['Alpha']);
+$alpha_joins = (isset($_GET['Alpha']) && is_array($_GET['Alpha'])) ? join("','",$_GET['Alpha']) : '';
 //die($add_sql )  ;
 //$region_childs = get_region_childs($region);
 //$region_childs=implode(',',$region_childs);

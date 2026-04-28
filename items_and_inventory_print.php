@@ -11,7 +11,11 @@ include "includes/inc.php";
 
 <table width="101%" border="1"    class="container" id="container" style="font-size: 16px; width: 100%; direction: rtl; border: 1px; border-collapse: collapse; margin-top: 10px;text-align:center; table-layout: fixed;">
     <thead style="background-color:#CCC;">
-    <th colspan="5" style="width:5%;" class="text-center"> <?php echo get_store_data($_GET['store_id'])[name] ; ?> - <?php echo date('Y-m-d') ; ?></th>
+    <?php
+    $store_data = get_store_data($_GET['store_id']);
+    $store_name = (isset($store_data['name']) ? $store_data['name'] : "");
+    ?>
+    <th colspan="5" style="width:5%;" class="text-center"> <?php echo $store_name ; ?> - <?php echo date('Y-m-d') ; ?></th>
     </thead>
 </table>
 <table width="101%" border="1"    class="container" id="container" style="font-size: 16px; width: 100%; direction: rtl; border: 1px; border-collapse: collapse; margin-top: 10px;text-align:center; table-layout: fixed;">
@@ -46,21 +50,25 @@ include "includes/inc.php";
        First get total number of rows in data table.
        If you have a WHERE clause in your query, make sure you mirror it here.
     */
-    if ($_GET['search'] == "" or $_GET['search'] == null) {
-        if ($_GET['groups'] == "" or $_GET['groups'] == null) {
-            $query = "SELECT COUNT(*) as num  FROM  items where id NOT IN(".get_hide_items().") ";
-        } else {
-            if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                $query = "SELECT COUNT(*) as num  FROM  items where id NOT IN(".get_hide_items().") and  groupid='" . $_GET['groups'] . "' and companies=='" . $_GET['companies'] . "' ";
-            } else {
-                $query = "SELECT COUNT(*) as num  FROM  items  where id NOT IN(".get_hide_items().") and groupid='" . $_GET['groups'] . "'  ";
-            }
-        }
-    } else {
-        $query = "SELECT COUNT(*) as num  FROM  items where id NOT IN(".get_hide_items().") and  id='$search'  and groupid='" . $_GET['groups'] . "'  ";
+    $where = " id NOT IN(" . get_hide_items() . ") ";
+    if (!empty($_GET['search'])) {
+        $where .= " AND id='" . mysqli_real_escape_string($con, $_GET['search']) . "' ";
     }
-    $total_pages = @mysqli_fetch_array(mysqli_query($con,$query));
-    $total_pages = $total_pages['num'];
+    if (!empty($_GET['groups'])) {
+        $where .= " AND groupid='" . mysqli_real_escape_string($con, $_GET['groups']) . "' ";
+    }
+    if (!empty($_GET['companies'])) {
+        $where .= " AND companies='" . mysqli_real_escape_string($con, $_GET['companies']) . "' ";
+    }
+    $query = "SELECT COUNT(*) as num FROM items WHERE $where";
+
+    $total_pages_res = mysqli_query($con, $query);
+    if ($total_pages_res) {
+        $total_pages_row = mysqli_fetch_array($total_pages_res);
+        $total_pages = $total_pages_row['num'];
+    } else {
+        $total_pages = 0;
+    }
     /* Setup vars for query. */
     $targetpage = "?groups=".$_GET['groups']."&search=".$_GET['search']."&limit=".$_GET['limit']."&orderby=".$_GET['orderby']."&type=".$_GET['type'].""; 	//your file name  (the name of this file)
     //how many items to show per page
@@ -68,131 +76,37 @@ include "includes/inc.php";
         $_SESSION['limit']=$_GET['limit'];
     }else{}
     if(!empty($_SESSION['limit'])){
-        $limit = $_SESSION['limit'];
-        if($limit>100){$limit=$items_per_page;}
+        $limit = (int)$_SESSION['limit'];
+        if($limit>100){$limit=(int)$items_per_page;}
     }else{
-        $limit = $items_per_page;
+        $limit = (int)$items_per_page;
     }
-    $page = $_GET['page'];
+    $page = (isset($_GET['page']) ? (int)$_GET['page'] : 0);
     if($page)
         $start = ($page - 1) * $limit; 			//first item to display on this page
     else
         $start = 0;								//if no page var is given, set start to 0
 
     /* Get data. */
-    if ($orderby == "item") {
-        /* 			SELECT
-          A.id AS Id,
-          A.nome AS Nome,
-          JT.id as OB_FIELD
-          FROM main_table A
-          JOIN joined_table JT ON JT.id = A.id_cat
+    $where_sql = " id NOT IN(" . get_hide_items() . ") ";
+    if (!empty($_GET['search'])) {
+        $where_sql .= " AND id='" . mysqli_real_escape_string($con, $_GET['search']) . "' ";
+    }
+    if (!empty($_GET['groups'])) {
+        $where_sql .= " AND groupid='" . mysqli_real_escape_string($con, $_GET['groups']) . "' ";
+    }
+    if (!empty($_GET['companies'])) {
+        $where_sql .= " AND companies='" . mysqli_real_escape_string($con, $_GET['companies']) . "' ";
+    }
 
-          ORDER BY OB_FIELD */
-        if ($_GET['search'] == "" or $_GET['search'] == null) {
-            if ($_GET['groups'] == "" or $_GET['groups'] == null) {
-                if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                    $sql = "SELECT * FROM items  where id NOT IN(".get_hide_items().") ";
-                } else {
-                    $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and companies='" . $_GET['companies'] . "' ";
-                }
-            } else {
-                if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                    $sql = "SELECT * FROM items  where id NOT IN(".get_hide_items().") and groupid='" . $_GET['groups'] . "' ";
-                } else {
-                    $sql = "SELECT * FROM items  where id NOT IN(".get_hide_items().") and companies='" . $_GET['companies'] . "' and groupid='" . $_GET['groups'] . "' ";
-                }
-            }
+    if ($orderby == "groupid") {
+        $sql = "SELECT i.*, g.GroupName as OB_FIELD FROM items i LEFT JOIN " . $prefix . "_groups g ON g.id=i.groupid WHERE $where_sql order by g.GroupName $type";
+    } else {
+        $sort_col = $orderby;
+        if ($orderby != "item" && $orderby != "groupid") {
+            $sort_col = "$orderby+0";
         }
-        else {
-            if ($_GET['groups'] == null) {
-                if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                    $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and id='$search'  ";
-                } else {
-                    $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and companies='" . $_GET['companies'] . "' and id='$search'  ";
-                }
-            } else {
-                if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                    $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and id='$search'   and groupid='" . $_GET['groups'] . "' ";
-                } else {
-                    $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and companies='" . $_GET['companies'] . "' and id='$search'   and groupid='" . $_GET['groups'] . "' ";
-                }
-            }
-        }
-    }
-    else if ($orderby == "groupid") {
-        if ($_GET['search'] == "" or $_GET['search'] == null) {
-            if ($_GET['groups'] == "" or $_GET['groups'] == null) {
-                $sql = "SELECT i.id as id,i.groupid as groupid,i.item as item,i.Quantity as Quantity,i.Retail_price as Retail_price,i.price as price,i.Discount as Discount,i.Barcode as Barcode,g.GroupName as OB_FIELD  FROM items i JOIN " . $prefix . "_groups g ON g.id=i.groupid  order by g.GroupName  $type";
-            } else {
-                if ($_GET['groups'] == null) {
-                    if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                        $sql = "SELECT i.id as id,i.companies as companies,i.groupid as groupid,i.item as item,i.Quantity as Quantity,i.Retail_price as Retail_price,i.price as price,i.Discount as Discount,i.Barcode as Barcode,g.GroupName as OB_FIELD  FROM items i JOIN " . $prefix . "_groups g ON g.id=i.groupid order by g.GroupName  $type";
-                    } else {
-                        $sql = "SELECT i.id as id,i.companies as companies,i.groupid as groupid,i.item as item,i.Quantity as Quantity,i.Retail_price as Retail_price,i.price as price,i.Discount as Discount,i.Barcode as Barcode,g.GroupName as OB_FIELD  FROM items i where companies='" . $_GET['companies'] . "' JOIN " . $prefix . "_groups g ON g.id=i.groupid order by g.GroupName  $type";
-                    }
-                } else {
-                    if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                        $sql = "SELECT i.id as id,i.groupid as groupid,i.companies as companies,i.item as item,i.Quantity as Quantity,i.Retail_price as Retail_price,i.price as price,i.Discount as Discount,i.Barcode as Barcode,g.GroupName as OB_FIELD  FROM items i JOIN " . $prefix . "_groups g ON g.id=i.groupid where groupid='" . $_GET['groups'] . "' order by g.GroupName  $type";
-                    } else {
-                        $sql = "SELECT i.id as id,i.groupid as groupid,i.companies as companies,i.item as item,i.Quantity as Quantity,i.Retail_price as Retail_price,i.price as price,i.Discount as Discount,i.Barcode as Barcode,g.GroupName as OB_FIELD  FROM items i where companies='" . $_GET['companies'] . "' JOIN " . $prefix . "_groups g ON g.id=i.groupid where groupid='" . $_GET['groups'] . "' order by g.GroupName  $type";
-                    }
-                }
-            }
-        } else {
-            if ($_GET['groups'] == null) {
-                if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                    $sql = "SELECT i.id as id,i.companies as companies,i.groupid as groupid,i.item as item,i.Quantity as Quantity,i.Retail_price as Retail_price,i.price as price,i.Discount as Discount,i.Barcode as Barcode,g.GroupName as OB_FIELD  FROM items i JOIN " . $prefix . "_groups g ON g.id=i.groupid  where id='$search'   order by g.GroupName  $type";
-                } else {
-                    $sql = "SELECT i.id as id,i.companies as companies,i.groupid as groupid,i.item as item,i.Quantity as Quantity,i.Retail_price as Retail_price,i.price as price,i.Discount as Discount,i.Barcode as Barcode,g.GroupName as OB_FIELD  FROM items i where companies='" . $_GET['companies'] . "' JOIN " . $prefix . "_groups g ON g.id=i.groupid  where id='$search'   order by g.GroupName  $type";
-                }
-            } else {
-                if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                    $sql = "SELECT i.id as id,i.companies as companies,i.groupid as groupid,i.item as item,i.Quantity as Quantity,i.Retail_price as Retail_price,i.price as price,i.Discount as Discount,i.Barcode as Barcode,g.GroupName as OB_FIELD  FROM items i JOIN " . $prefix . "_groups g ON g.id=i.groupid  where id='$search'   and groupid='" . $_GET['groups'] . "' order by g.GroupName  $type";
-                } else {
-                    $sql = "SELECT i.id as id,i.companies as companies,i.groupid as groupid,i.item as item,i.Quantity as Quantity,i.Retail_price as Retail_price,i.price as price,i.Discount as Discount,i.Barcode as Barcode,g.GroupName as OB_FIELD  FROM items i  where companies='" . $_GET['companies'] . "' JOIN " . $prefix . "_groups g ON g.id=i.groupid  where id='$search'   and groupid='" . $_GET['groups'] . "' order by g.GroupName  $type";
-                }
-            }
-        }
-    }
-    else {
-        if ($_GET['search'] == "" or $_GET['search'] == null) {
-            if ($_GET['groups'] == "" or $_GET['groups'] == null) {
-                if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                    $sql = "SELECT * FROM items  where id NOT IN(".get_hide_items().") order by $orderby+0 $type";
-                } else {
-                    $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and  companies='" . $_GET['companies'] . "' order by $orderby+0 $type";
-                }
-            } else {
-                if ($_GET['groups'] == null) {
-                    if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                        $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") order by $orderby+0 $type";
-                    } else {
-                        $sql = "SELECT * FROM items  where id NOT IN(".get_hide_items().") and  companies='" . $_GET['companies'] . "' order by $orderby+0 $type";
-                    }
-                } else {
-                    if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                        $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and groupid='" . $_GET['groups'] . "'  order by $orderby+0 $type";
-                    } else {
-                        $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and companies='" . $_GET['companies'] . "' and groupid='" . $_GET['groups'] . "'  order by $orderby+0 $type";
-                    }
-                }
-            }
-        } else {
-            if ($_GET['groups'] == null) {
-                if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                    $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and id='$search'  order by $orderby+0 $type";
-                } else {
-                    $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and companies='" . $_GET['companies'] . "' and id='$search'  order by $orderby+0 $type";
-                }
-            } else {
-                if ($_GET['companies'] == "" or $_GET['companies'] == null) {
-                    $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and id='$search'  and groupid='" . $_GET['groups'] . "' order by $orderby+0 $type";
-                } else {
-                    $sql = "SELECT * FROM items where id NOT IN(".get_hide_items().") and companies='" . $_GET['companies'] . "' and  id='$search'  and groupid='" . $_GET['groups'] . "' order by $orderby+0 $type";
-                }
-            }
-        }
+        $sql = "SELECT * FROM items WHERE $where_sql order by $sort_col $type";
     }
 
 
@@ -308,10 +222,11 @@ include "includes/inc.php";
 
 
 
-        $openQ = get_sum_product_store_data($row['id'], $_GET['store_id'])[Quantity] ;
+        $sum_data_row = get_sum_product_store_data($row['id'], (isset($_GET['store_id']) ? $_GET['store_id'] : null));
+        $openQ = (isset($sum_data_row['Quantity']) ? $sum_data_row['Quantity'] : 0) ;
         $all_qty0 = ($openQ + GetQuantity($row['id'],null , $store_id));
         $NumberBreakdown23 = NumberBreakdown($all_qty0, $returnUnsigned = false);
-        $all_qty000 = (abs($NumberBreakdown23[1]) * $row['subqty']);
+        $all_qty000 = (abs($NumberBreakdown23[1]) * (float)$row['subqty']);
         $whole00 = $NumberBreakdown23[0];
         
         

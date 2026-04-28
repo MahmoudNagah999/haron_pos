@@ -4,10 +4,12 @@ $from=str_replace("/", "-", $_GET['from']);
 $to=str_replace("/", "-", $_GET['to']);
 $from=stripslashes(date('Y-m-d',strtotime($from)));
 $to=stripslashes(date('Y-m-d',strtotime($to)));
-$id=stripslashes($_GET['id']);
+$Quantitytotallast = 0;
+$totalgetbalance = 0;
+$id = (isset($_GET['id']) ? stripslashes($_GET['id']) : 0);
 ######################################
-$result_getbalance = mysqli_query($con,"SELECT Quantity FROM items where id='".$_GET['id']."'");
-if(@mysqli_num_rows($result_getbalance)>0){
+$result_getbalance = mysqli_query($con,"SELECT Quantity FROM items where id='".$id."'");
+if($result_getbalance && @mysqli_num_rows($result_getbalance)>0){
 while($row_getbalance = mysqli_fetch_array($result_getbalance))
   {
 	$totalgetbalance=$row_getbalance['Quantity'];
@@ -105,7 +107,7 @@ while($row_item=mysqli_fetch_array($result_item))
       <?php
       $row_items_Quantityq = $Quantitytotala;
       $NumberBreakdown2q=NumberBreakdown($row_items_Quantityq, $returnUnsigned = false);
-      $all_qty002q=round((abs($NumberBreakdown2q[1])*$item_subqty));
+      $all_qty002q=round((abs($NumberBreakdown2q[1]) * (float)$item_subqty));
       $row_items_Quantityq="$NumberBreakdown2q[0],$all_qty002q";
       ?>
     <td class="text-center"><?php echo"".$row_items_Quantityq.""; ?></td>
@@ -127,7 +129,7 @@ while($rowa = @mysqli_fetch_array($resulta))
     <th scope="row" class="text-center"><?php if($q=="outgoing"){
 
 $NumberBreakdown=NumberBreakdown($rowa['Quantity'], $returnUnsigned = false);
-				$all_qty00=(abs($NumberBreakdown[1])*$rowa['subqty']);
+				$all_qty00=(abs($NumberBreakdown[1]) * (float)$rowa['subqty']);
 		echo'<span style="color:#F00;">'.$NumberBreakdown[0].','.$all_qty00.' </span>';
 		} ?></th>
        <td class="text-center"><?php  if($q=="outgoing"){echo"".Get_size_name($rowa['size'])."";} ?></td>
@@ -136,7 +138,7 @@ $NumberBreakdown=NumberBreakdown($rowa['Quantity'], $returnUnsigned = false);
     <td class="text-center"><?php if($q=="incoming"){ 
 	if($rowa['unit']=="2"){
 		$NumberBreakdownq=NumberBreakdown($rowa['Quantity'], $returnUnsigned = false);
-				$all_qtyq=(abs($NumberBreakdownq[1])*$rowa['subqty']);
+				$all_qtyq=(abs($NumberBreakdownq[1]) * (float)$rowa['subqty']);
 		echo''.$NumberBreakdownq[0].','.$all_qtyq.'';
 		}else{
 	 echo"".$rowa['Quantity']."";
@@ -169,7 +171,7 @@ while($row_suppliersw = mysqli_fetch_array($result_suppliersw))
 	
 			
 			$NumberBreakdown2=NumberBreakdown($Quantitytotal, $returnUnsigned = false);
-				$all_qty002=(abs($NumberBreakdown2[1])*$rowa['subqty']);
+				$all_qty002=(abs($NumberBreakdown2[1]) * (float)$rowa['subqty']);
 		echo'<span style="color:#F00;">'.$NumberBreakdown2[0].','.$all_qty002.' </span>';
 	 ?></td>
   </tr>

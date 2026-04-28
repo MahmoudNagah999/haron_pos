@@ -293,14 +293,11 @@ $targetpage = "";
                                             ?>
                                             <div style="width:20%; float:right;"><label style="float:right; ">
                                                     <?php echo "$The_client_lang"; ?>
-                                                </label><input type="text" name="client" id="client" dir="rtl"
-                                                    value="<?php if (isset($_GET['clientID'])) {
-                                                        echo "" . $clientname . "";
-                                                    } ?>"
-                                                    class="w100 form-control" <?php if ($_GET['reports'] == "customer_payments") { ?>
-                                                    onkeyup="showResultsOfClipaym(this.value);"
-                                                <?php } else { ?> onkeyup="showResultsOfCli(this.value);"
-                                                <?php } ?> autocomplete="off" />
+                                                </label><input type="text" name="client" id="client" dir="rtl" value="<?php if (isset($_GET['clientID'])) {
+                                                    echo "" . $clientname . "";
+                                                } ?>" class="w100 form-control" <?php if ($_GET['reports'] == "customer_payments") { ?>
+                                                        onkeyup="showResultsOfClipaym(this.value);" <?php } else { ?>
+                                                        onkeyup="showResultsOfCli(this.value);" <?php } ?> autocomplete="off" />
                                                 <div id="livesearchcli"
                                                     style="z-index:1000000000; width:20%; padding-right:50px;  text-align:right; margin-top:5px;  float:right; position:fixed; border:0px; ">
                                                 </div>
@@ -320,13 +317,9 @@ $targetpage = "";
                                             ?>
                                             <div style="width:20%; float:right;"><label style="float:right; ">
                                                     <?php echo "$The_Supplier_lang"; ?>
-                                                </label><input type="text" name="supplier" id="supplier" dir="rtl"
-                                                    value="<?php if (isset($_GET['SupplierID'])) {
-                                                        echo "" . $suppliername . "";
-                                                    } ?>"
-                                                    class="w100 form-control" <?php if ($_GET['reports'] == "payments_suppliers") { ?>onkeyup="showResultspaym(this.value)"
-                                                <?php } else { ?>onkeyup="showResults(this.value)"
-                                                <?php } ?> autocomplete="off" />
+                                                </label><input type="text" name="supplier" id="supplier" dir="rtl" value="<?php if (isset($_GET['SupplierID'])) {
+                                                    echo "" . $suppliername . "";
+                                                } ?>" class="w100 form-control" <?php if ($_GET['reports'] == "payments_suppliers") { ?>onkeyup="showResultspaym(this.value)" <?php } else { ?>onkeyup="showResults(this.value)" <?php } ?> autocomplete="off" />
                                                 <div id="livesearchcl"
                                                     style="z-index:1000000000; width:20%; padding-right:50px;  text-align:right; margin-top:5px;  float:right; position:fixed; border:0px; ">
                                                 </div>
@@ -345,12 +338,10 @@ $targetpage = "";
                                             ?>
                                             <div style="width:20%; float:right;"><label style="float:right; ">
                                                     <?php echo "$the_Item_lang"; ?>
-                                                </label><input type="text" name="item" id="item"
-                                                    value="<?php if (isset($_GET['q'])) {
-                                                        echo "" . $itemsname . "";
-                                                    } ?>"
-                                                    onkeyup="showResultsOfItemssalei(this.value)" autocomplete="off"
-                                                    class="w100 form-control" />
+                                                </label><input type="text" name="item" id="item" value="<?php if (isset($_GET['q'])) {
+                                                    echo "" . $itemsname . "";
+                                                } ?>" onkeyup="showResultsOfItemssalei(this.value)"
+                                                    autocomplete="off" class="w100 form-control" />
                                                 <div id="livesearch30"
                                                     style="z-index:1000000000; width:20%; padding-right:50px;  text-align:right; margin-top:5px;  float:right; position:fixed; border:0px; ">
                                                 </div>
@@ -368,12 +359,10 @@ $targetpage = "";
                                             ?>
                                             <div style="width:20%; float:right;"><label style="float:right; ">
                                                     <?php echo "$the_Item_lang"; ?>
-                                                </label><input type="text" name="item" id="item"
-                                                    value="<?php if (isset($_GET['q'])) {
-                                                        echo "" . $itemsname . "";
-                                                    } ?>"
-                                                    onkeyup="showResultsOfItemsrew(this.value)" autocomplete="off"
-                                                    class="w100 form-control" />
+                                                </label><input type="text" name="item" id="item" value="<?php if (isset($_GET['q'])) {
+                                                    echo "" . $itemsname . "";
+                                                } ?>" onkeyup="showResultsOfItemsrew(this.value)"
+                                                    autocomplete="off" class="w100 form-control" />
                                                 <div id="livesearch22"
                                                     style="z-index:1000000000; width:20%; padding-right:50px;  text-align:right; margin-top:5px;  float:right; position:fixed; border:0px; ">
                                                 </div>
@@ -391,11 +380,9 @@ $targetpage = "";
                                             ?>
                                             <div style="width:20%; float:right;"><label style="float:right; ">
                                                     <?php echo "$the_Item_lang"; ?>
-                                                </label><input type="text" name="item" id="item"
-                                                    value="<?php if (isset($_GET['q'])) {
-                                                        echo "" . $itemsname . "";
-                                                    } ?>"
-                                                    onkeyup="showResultsOfItemssr(this.value)" autocomplete="off"
+                                                </label><input type="text" name="item" id="item" value="<?php if (isset($_GET['q'])) {
+                                                    echo "" . $itemsname . "";
+                                                } ?>" onkeyup="showResultsOfItemssr(this.value)" autocomplete="off"
                                                     class="w100 form-control" />
                                                 <div id="livesearchit40"
                                                     style="z-index:1000000000; width:20%; padding-right:50px;  text-align:right; margin-top:5px;  float:right; position:fixed; border:0px; ">
@@ -409,23 +396,21 @@ $targetpage = "";
                                                 <label style="float:right;margin-right: 15px ">
                                                     <?php echo "رقم امر التوريد"; ?>
                                                 </label>
-                                                <input type="text" name="inv_idid" id="inv_idid" class="w100 form-control"
-                                                    value="<?php if (isset($_GET['inv_idid'])) {
-                                                        echo "" . $_GET['inv_idid'] . "";
-                                                    } else {
-                                                    } ?>" />
+                                                <input type="text" name="inv_idid" id="inv_idid" class="w100 form-control" value="<?php if (isset($_GET['inv_idid'])) {
+                                                    echo "" . $_GET['inv_idid'] . "";
+                                                } else {
+                                                } ?>" />
                                             <?php } ?>
                                         </div>
 
 
                                         <div style="width:15%; float:right;"><label style="float:right; ">
                                                 <?php echo "$from_lang"; ?>
-                                            </label><input type="text" name="from" id="from"
-                                                value="<?php if (isset($_GET['from'])) {
-                                                    echo "" . $_GET['from'] . "";
-                                                } else {
-                                                    echo date("d/m/2019");
-                                                } ?>" class="w100 form-control" />
+                                            </label><input type="text" name="from" id="from" value="<?php if (isset($_GET['from'])) {
+                                                echo "" . $_GET['from'] . "";
+                                            } else {
+                                                echo date("d/m/2019");
+                                            } ?>" class="w100 form-control" />
                                             <script type="text/javascript">
                                                 $('#from').dateEntry({
                                                     dateFormat: 'dmy/',
@@ -439,12 +424,11 @@ $targetpage = "";
                                             <label style="float:right; ">
                                                 <?php echo "$to_lang"; ?>
                                             </label>
-                                            <input type="text" name="to" id="to" class="w100 form-control"
-                                                value="<?php if (isset($_GET['to'])) {
-                                                    echo "" . $_GET['to'] . "";
-                                                } else {
-                                                    echo date("d/m/Y");
-                                                } ?>" />
+                                            <input type="text" name="to" id="to" class="w100 form-control" value="<?php if (isset($_GET['to'])) {
+                                                echo "" . $_GET['to'] . "";
+                                            } else {
+                                                echo date("d/m/Y");
+                                            } ?>" />
 
 
                                             <?php if ($_GET['reports'] == "expenses") { ?>
@@ -644,11 +628,9 @@ $targetpage = "";
                                             <label style="float:right; ">
                                                 <?php echo "ORDER#"; ?>
                                             </label>
-                                            <input type="text" name="inv" id="inv" dir="rtl"
-                                                value="<?php if (isset($_GET['inv'])) {
-                                                    echo "" . $_GET['inv'] . "";
-                                                } ?>"
-                                                class="w100 form-control" autocomplete="off" />
+                                            <input type="text" name="inv" id="inv" dir="rtl" value="<?php if (isset($_GET['inv'])) {
+                                                echo "" . $_GET['inv'] . "";
+                                            } ?>" class="w100 form-control" autocomplete="off" />
 
                                         </div>
 
@@ -656,11 +638,9 @@ $targetpage = "";
                                     <?php if ($_GET['reports'] == "sales") { ?>
                                         <div style="width:10%; float:right;"><label style="float:right; ">
                                                 <?php echo "DOC#"; ?>
-                                            </label><input type="text" name="doc" id="doc" dir="rtl"
-                                                value="<?php if (isset($_GET['doc'])) {
-                                                    echo "" . $_GET['doc'] . "";
-                                                } ?>"
-                                                class="w100 form-control" autocomplete="off" />
+                                            </label><input type="text" name="doc" id="doc" dir="rtl" value="<?php if (isset($_GET['doc'])) {
+                                                echo "" . $_GET['doc'] . "";
+                                            } ?>" class="w100 form-control" autocomplete="off" />
 
                                         </div>
                                     <?php } ?>
@@ -902,7 +882,15 @@ $targetpage = "";
 
 
                                     <?php if ($_GET['reports'] == "order_supply") {
-                                        $alphapatic = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+                                        $alphapatic = [
+                                            'P',
+                                            'C',
+                                            'i',
+                                            'W',
+                                            'Y'
+                                        ];
+                                        // $alphapatic = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
                                         ?>
                                         <div style="width:10%; float:right;">
                                             <label style="float:right; ">
@@ -1026,22 +1014,18 @@ $targetpage = "";
                                         <div style="width:10%; float:right;"><label style="float:right; ">
                                                 <?php echo "mobile1"; ?>
                                             </label>
-                                            <input type="text" name="mobile1" id="mobile1" dir="rtl"
-                                                value="<?php if (isset($_GET['mobile1'])) {
-                                                    echo "" . $_GET['mobile1'] . "";
-                                                } ?>"
-                                                class="w100 form-control" autocomplete="off" />
+                                            <input type="text" name="mobile1" id="mobile1" dir="rtl" value="<?php if (isset($_GET['mobile1'])) {
+                                                echo "" . $_GET['mobile1'] . "";
+                                            } ?>" class="w100 form-control" autocomplete="off" />
 
 
                                         </div>
                                         <div style="width:10%; float:right;display: none"><label style="float:right; ">
                                                 <?php echo "mobile2"; ?>
                                             </label>
-                                            <input type="text" name="mobile2" id="mobile2" dir="rtl"
-                                                value="<?php if (isset($_GET['mobile2'])) {
-                                                    echo "" . $_GET['mobile2'] . "";
-                                                } ?>"
-                                                class="w100 form-control" autocomplete="off" />
+                                            <input type="text" name="mobile2" id="mobile2" dir="rtl" value="<?php if (isset($_GET['mobile2'])) {
+                                                echo "" . $_GET['mobile2'] . "";
+                                            } ?>" class="w100 form-control" autocomplete="off" />
 
 
                                         </div>
@@ -1312,8 +1296,8 @@ $targetpage = "";
                                                                                                                                                             highlightFill: "#0026F8",
                                                                                                                                                             highlightStroke: "#901B1B",
                                                                                                                                                             data: [<?php echo "$chart_total"; ?>]
-                                                                                                                                                                }]
-                                                                                                                                                            };
+                                                                                                                                                        }]
+                                                                                                                                                    };
 
                                                                                                                                                     // window.onload = function(){
                                                                                                                                                     //     var ctx = document.getElementById("canvas").getContext("2d");
@@ -1399,8 +1383,7 @@ $targetpage = "";
 
                                         <li class='<?php if ($_GET['reports'] == "") {
                                             echo "active";
-                                        } ?>'><a
-                                                href='reports.php'><span>
+                                        } ?>'><a href='reports.php'><span>
                                                     <?php echo "$Reports_lang"; ?>
                                                 </span></a></li>
                                         <li><a target="_BLANK" href="orders_rate_r.php"><span>اﻻوردرات المجمعه</span></a></li>
@@ -1565,8 +1548,7 @@ $targetpage = "";
 
                                             <li class='<?php if ($_GET['reports'] == "expenses") {
                                                 echo "active";
-                                            } ?>'><a
-                                                    href='?reports=expenses'><span>
+                                            } ?>'><a href='?reports=expenses'><span>
                                                         <?php echo "$Expenses_lang"; ?>
                                                     </span></a>
                                             </li>
@@ -1618,8 +1600,7 @@ $targetpage = "";
                                         } else { ?>
                                             <li class='<?php if ($_GET['reports'] == "profit") {
                                                 echo "active";
-                                            } ?>'><a
-                                                    href='?reports=profit'><span>
+                                            } ?>'><a href='?reports=profit'><span>
                                                         <?php echo "$profits_lang"; ?>
                                                     </span></a></li>
                                         <?php } ?>
@@ -1647,8 +1628,7 @@ $targetpage = "";
                                                 <ul>
                                                     <li class='<?php if ($_GET['reports'] == "treasury") {
                                                         echo "active";
-                                                    } ?>'><a
-                                                            href='?reports=treasury'><span>
+                                                    } ?>'><a href='?reports=treasury'><span>
                                                                 <?php echo "الخزينة"; ?>
                                                             </span></a>
                                                     </li>
@@ -1702,13 +1682,13 @@ $targetpage = "";
         placeholder: "اختر",
         allowClear: true
     });
-    $('#region_id').on('change', function() {
+    $('#region_id').on('change', function () {
         var region_ids = $(this).val();
         $.ajax({
             url: 'ajax/get_centers_by_region.php',
             type: 'POST',
             data: { region_ids: region_ids },
-            success: function(response) {
+            success: function (response) {
                 $('#centers_id').html(response);
             }
         });

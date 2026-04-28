@@ -130,11 +130,15 @@ function get_all_orders_count_not_know()
 
 /////////////////////
 $orders_total_value_status = get_all_orders_count();
+if (!is_array($orders_total_value_status)) { $orders_total_value_status = []; }
 $sumArray = array();
 
 foreach ($orders_total_value_status as $k => $subArray) {
-    foreach ($subArray as $id => $value) {
-        $sumArray[$id] += $value;
+    if (is_array($subArray)) {
+        foreach ($subArray as $id => $value) {
+            if (!isset($sumArray[$id])) { $sumArray[$id] = 0; }
+            $sumArray[$id] += $value;
+        }
     }
 }
 
@@ -198,10 +202,12 @@ $schema_insert .= '<table border="1">';
 //make the column headers what you want in whatever order you want
 $schema_insert .= '<td><u>المنطقة</u></td>';
 
-foreach ($get_all_oprders_status['name'] as $value) {
+if (isset($get_all_oprders_status['name']) && is_array($get_all_oprders_status['name'])) {
+    foreach ($get_all_oprders_status['name'] as $value) {
 
-    $schema_insert .= "<td> <u>" . $value . "</u></td>";
+        $schema_insert .= "<td> <u>" . $value . "</u></td>";
 
+    }
 }
 $schema_insert .= "<td><u>المجموع</u></td>";
 $schema_insert .= "<td><u>اجمالي الحالات</u></td>";
@@ -217,6 +223,8 @@ if (empty($region) || $skip_region == 1) {
 $result = @mysqli_query($con, "SELECT * FROM cairo_region $q_region");
 $num = @mysqli_num_rows($result);
 $SumOfValueArr = [];
+$total_rate = 0;
+$sum_status = array();
 if ($num > 0) {
     while ($row = mysqli_fetch_array($result)) {
         #################
@@ -233,9 +241,9 @@ if ($num > 0) {
         $schema_insert .= '<td>' . $SumOfValue . '</td>';
 
         $xyz = array_sum($orders_total_value_status[$row['id']]);
-        $percent = round((($SumOfValue / $xyz) * 100), 2);
+        $percent = ($xyz > 0) ? round((($SumOfValue / $xyz) * 100), 2) : 0;
         $schema_insert .= '<td>' . $xyz . '</td>';
-        $total_rate += (($xyz / $Total_final) * 100);
+        $total_rate += ($Total_final > 0) ? (($xyz / $Total_final) * 100) : 0;
         $schema_insert .= '<td>' . $percent . ' % </td>';
 
 
@@ -248,14 +256,18 @@ if ($skip_region == 1 || empty($region)) {
     $schema_insert .= '<tr>';
     $schema_insert .= '<td>غير معروفة</td>';
 
-    foreach ($get_all_oprders_status['id'] as $value) {
-        $sum_status_not_know += $get_all_orders_count_not_know[$value];
-        $schema_insert .= '<td>' . $get_all_orders_count_not_know[$value] . '</td>';
+    $sum_status_not_know = 0;
+    if (isset($get_all_oprders_status['id']) && is_array($get_all_oprders_status['id'])) {
+        foreach ($get_all_oprders_status['id'] as $value) {
+            $val_not_know = isset($get_all_orders_count_not_know[$value]) ? $get_all_orders_count_not_know[$value] : 0;
+            $sum_status_not_know += $val_not_know;
+            $schema_insert .= '<td>' . $val_not_know . '</td>';
+        }
     }
     $schema_insert .= '<td></td>';
     $schema_insert .= '<td>' . $sum_status_not_know . '</td>';
-    $schema_insert .= '<td>' . round((($sum_status_not_know / $Total_final) * 100), 2) . '</td>';
-    $total_rate += (($sum_status_not_know / $Total_final) * 100);
+    $schema_insert .= '<td>' . (($Total_final > 0) ? round((($sum_status_not_know / $Total_final) * 100), 2) : 0) . '</td>';
+    $total_rate += ($Total_final > 0) ? (($sum_status_not_know / $Total_final) * 100) : 0;
 
     $schema_insert .= '</tr>';
 }

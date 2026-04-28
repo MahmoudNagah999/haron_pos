@@ -59,15 +59,17 @@ function Get_fawry_type($id) {
                     ?>
                     <?php
                     $checkbox = $_POST['cb']; //from name="checkbox[]"
-                    $countCheck = count($_POST['cb']);
-                    for ($i = 0; $i <= $countCheck; $i++) {
-                        $del_id = $checkbox[$i];
-                        mysqli_query($con, "DELETE FROM " . $prefix . "_fawry WHERE id='" . $del_id . "'");
-                        if ($i == $countCheck - 1) {
-                            echo'<div class="alert alert-success text-right">
+                    $countCheck = (is_array($checkbox)) ? count($checkbox) : 0;
+                    if ($countCheck > 0) {
+                        for ($i = 0; $i <= $countCheck; $i++) {
+                            $del_id = $checkbox[$i];
+                            mysqli_query($con, "DELETE FROM " . $prefix . "_fawry WHERE id='" . $del_id . "'");
+                            if ($i == $countCheck - 1) {
+                                echo'<div class="alert alert-success text-right">
               ' . $Deletion_successfully_lang . '
                             </div>';
-                            header("refresh:1;url=fawry.php");
+                                header("refresh:1;url=fawry.php");
+                            }
                         }
                     }
                     //

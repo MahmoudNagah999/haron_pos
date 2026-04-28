@@ -1,11 +1,11 @@
 <?php
 include "includes/inc.php";
-$status = (array)$_GET['status'];
-$branch = (array)$_GET['branch'];
-$region = (array)$_GET['region'];
-$user_id = (array)$_GET['user_id'];
-$Alpha = (array)$_GET['Alpha'];
-$product_id = (array)$_GET['products'];
+$status = (array) $_GET['status'];
+$branch = (array) $_GET['branch'];
+$region = (array) $_GET['region'];
+$user_id = (array) $_GET['user_id'];
+$Alpha = (array) $_GET['Alpha'];
+$product_id = (array) $_GET['products'];
 $date_from = str_replace("/", "-", $_GET['date_from']);
 $date_to = str_replace("/", "-", $_GET['date_to']);
 $date_from = stripslashes(date('Y-m-d', strtotime($date_from)));
@@ -64,13 +64,13 @@ function get_all_orders_count()
     global $Alpha;
     if (empty($Alpha)) {
     } else {
-        foreach($Alpha as $char){
-            $AlphaX[] = "'".$char."'";
+        foreach ($Alpha as $char) {
+            $AlphaX[] = "'" . $char . "'";
         }
         $arr_alpha = implode(", ", $AlphaX);
         $q_alpha = " and alpha IN ($arr_alpha)";
     }
-    
+
     global $product_id;
     if (empty($product_id)) {
     } else {
@@ -234,10 +234,13 @@ $Total_final = array_sum($sumArray);
         <form class="form-inline no-print" name="form">
 
             <div class="form-group mb-1 no-print">
-                <a target="_BLANK" href="xls/export/order_supply_emps_rate_excel.php?date_from=<?php echo $_GET['date_from']; ?>&date_to=<?php echo $_GET['date_to']; ?>&status=<?php echo implode(", ", $status); ?>&branch=<?php echo implode(", ", $branch); ?>&region=<?php echo implode(", ", $region); ?>&users=<?php echo implode(', ', $user_id) ?>" class="btn btn-danger"> تصدير اكسل <i class="fa fa-file-excel-o" aria-hidden="true"></i> </a>
+                <a target="_BLANK"
+                    href="xls/export/order_supply_emps_rate_excel.php?date_from=<?php echo $_GET['date_from']; ?>&date_to=<?php echo $_GET['date_to']; ?>&status=<?php echo implode(", ", $status); ?>&branch=<?php echo implode(", ", $branch); ?>&region=<?php echo implode(", ", $region); ?>&users=<?php echo implode(', ', $user_id) ?>"
+                    class="btn btn-danger"> تصدير اكسل <i class="fa fa-file-excel-o" aria-hidden="true"></i> </a>
             </div>
 
-            <div class="form-group mb-2"><button type="submit" class="btn btn-success" name="submit">بحث <i class="fa fa-search" aria-hidden="true"></i> </button>
+            <div class="form-group mb-2"><button type="submit" class="btn btn-success" name="submit">بحث <i
+                        class="fa fa-search" aria-hidden="true"></i> </button>
             </div>
             <div class="form-group mb-1">
                 <select name="products[]" class="form-control js-example-basic-multiple-limit" multiple>
@@ -260,10 +263,11 @@ $Total_final = array_sum($sumArray);
             </div>
             <div class="form-group mb-2">
                 <input type="text" name="date_to" id="date_to" value="<?php if (isset($_GET['date_to'])) {
-                                                                            echo "" . $_GET['date_to'] . "";
-                                                                        } else {
-                                                                            echo date("d/m/Y");
-                                                                        } ?>" class="form-control" placeholder="التاريخ الى" aria-label="التاريخ الى">
+                    echo "" . $_GET['date_to'] . "";
+                } else {
+                    echo date("d/m/Y");
+                } ?>" class="form-control"
+                    placeholder="التاريخ الى" aria-label="التاريخ الى">
 
             </div>
             <script type="text/javascript">
@@ -274,10 +278,11 @@ $Total_final = array_sum($sumArray);
             </script>
             <div class="form-group mb-2">
                 <input type="text" name="date_from" id="date_from" value="<?php if (isset($_GET['date_from'])) {
-                                                                                echo "" . $_GET['date_from'] . "";
-                                                                            } else {
-                                                                                echo date("01/m/2019");
-                                                                            } ?>" class="form-control" placeholder="التاريخ من" aria-label="التاريخ من">
+                    echo "" . $_GET['date_from'] . "";
+                } else {
+                    echo date("01/m/2019");
+                } ?>" class="form-control"
+                    placeholder="التاريخ من" aria-label="التاريخ من">
                 <script type="text/javascript">
                     $('#date_from').dateEntry({
                         dateFormat: 'dmy/',
@@ -288,8 +293,8 @@ $Total_final = array_sum($sumArray);
             <div class="form-group mb-2">
                 <select name="status[]" class="form-control js-example-basic-multiple-limit" multiple>
                     <option value="1000000000" <?php if (empty($status) || in_array("1000000000", $status)) {
-                                                    echo "selected";
-                                                } ?>>اختر الحالة
+                        echo "selected";
+                    } ?>>اختر الحالة
                     </option>
                     <?php
                     $result_search = mysqli_query($con, "SELECT id,name FROM cairo_order_supply_status order by id ASC");
@@ -306,21 +311,30 @@ $Total_final = array_sum($sumArray);
                 </select>
             </div>
 
-            
-            <?php $alphapatic = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']; ?>
-                <div class="form-group mb-2">
-                    <select id="Alpha" multiple="multiple" name="Alpha[]" size="1" class="w100 placeholder-single_order_status js-states form-control">
-                        <?php
-                        foreach ($alphapatic as $value) {
+
+            <?php
+            $alphapatic = [
+                'P',
+                'C',
+                'i',
+                'W',
+                'Y'
+            ];
+            //  $alphapatic = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']; ?>
+            <div class="form-group mb-2">
+                <select id="Alpha" multiple="multiple" name="Alpha[]" size="1"
+                    class="w100 placeholder-single_order_status js-states form-control">
+                    <?php
+                    foreach ($alphapatic as $value) {
                         if (in_array($value, $Alpha)) {
-                                echo '<option data-attrchangeid ="' . $value . '" value="' . $value . '"   selected="selected">' . $value . '</option>';
-                            } else {
-                                echo '<option data-attrchangeid ="' . $value . '" value="' . $value . '">' . $value . '</option>';
-                            }
+                            echo '<option data-attrchangeid ="' . $value . '" value="' . $value . '"   selected="selected">' . $value . '</option>';
+                        } else {
+                            echo '<option data-attrchangeid ="' . $value . '" value="' . $value . '">' . $value . '</option>';
                         }
-                        ?>
-                    </select>
-                </div>
+                    }
+                    ?>
+                </select>
+            </div>
 
             <div class="form-group mb-2">
                 <select name="branch[]" class="form-control js-example-basic-multiple-limit" multiple>
@@ -344,8 +358,8 @@ $Total_final = array_sum($sumArray);
             <div class="form-group mb-2">
                 <select name="region[]" class="form-control js-example-basic-multiple-limit" multiple>
                     <option value="1000000000" <?php if (empty($region) || in_array("1000000000", $region)) {
-                                                    echo "selected";
-                                                } ?>>المنطقة
+                        echo "selected";
+                    } ?>>المنطقة
                     </option>
                     <?php
                     $result_search_region = mysqli_query($con, "SELECT id,name FROM cairo_region order by name ASC");
@@ -387,7 +401,7 @@ $Total_final = array_sum($sumArray);
         $(".js-example-basic-multiple-limit").select2({
             maximumSelectionLength: 1000
         });
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('.date').mask('00-00-0000');
         });
         $(".placeholder-single_order_status").select2({
@@ -398,7 +412,8 @@ $Total_final = array_sum($sumArray);
     </script>
     <div class="container-fluid">
         <table class="table table-bordered" dir="rtl">
-            <thead style="background: white;position: sticky;top: 0; /* Don't forget this, required for the stickiness */box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);background: #ff4747;color: white;">
+            <thead
+                style="background: white;position: sticky;top: 0; /* Don't forget this, required for the stickiness */box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);background: #ff4747;color: white;">
                 <tr>
                     <th class="text-center" scope="col">اجمالي الحالات</th>
                     <?php
@@ -435,15 +450,15 @@ $Total_final = array_sum($sumArray);
                             $bgcolor = "style='background: #ffffff';";
                         }
 
-                        $trrr =  '<tr ' . $bgcolor . '>';
+                        $trrr = '<tr ' . $bgcolor . '>';
 
-                        $xyz = array_sum((array)($orders_total_value_status[$row['id']] ?? []));
+                        $xyz = array_sum((array) ($orders_total_value_status[$row['id']] ?? []));
                         $xyzVal = ($xyz != '') ? $xyz : '-';
                         $trrr .= '<td style="text-align:center;font-size:17px;border:1px solid #000;color:black">' . $xyzVal . '</td>';
 
                         $SumOfValues = 0;
                         foreach ($get_all_oprders_status['id'] as $value) {
-                            $raw_val = (int)$orders_total_value_status[$row['id']][$value];
+                            $raw_val = (int) $orders_total_value_status[$row['id']][$value];
                             $sum_status[$value] = ($sum_status[$value] ?? 0) + $raw_val;
                             $SumOfValues += $raw_val;
                             $value_display = ($raw_val != 0) ? $raw_val : '-';
@@ -460,7 +475,7 @@ $Total_final = array_sum($sumArray);
                         $percent = ($xyz > 0) ? round((($SumOfValues / $xyz) * 100), 2) : 0;
                         $trrr .= '<td style="text-align:center;font-size:17px;border:1px solid #000;color:black">' . $percent . ' % </td>';
                         $trrr .= '</tr>';
-                        if ($SumOfValues > 0){
+                        if ($SumOfValues > 0) {
                             echo $trrr;
                         }
                         $iii++;
@@ -479,7 +494,7 @@ $Total_final = array_sum($sumArray);
 
                     $sum_status_not_know = 0;
                     foreach ($get_all_oprders_status['id'] as $value) {
-                        $raw_val_not_know = (int)$get_all_orders_count_not_know[$value];
+                        $raw_val_not_know = (int) $get_all_orders_count_not_know[$value];
                         $sum_status_not_know += $raw_val_not_know;
                         echo '<td style="text-align:center;font-size:20px;border:2px solid #000">' . $raw_val_not_know . '</td>';
                     }
@@ -512,5 +527,6 @@ $Total_final = array_sum($sumArray);
     </div>
     </div>
 </body>
+
 </html>
 <?php include 'includes/footer.php'; ?>

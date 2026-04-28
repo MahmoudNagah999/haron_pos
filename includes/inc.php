@@ -259,6 +259,7 @@ function get_settings($id)
 
 function NumberBreakdown($number, $returnUnsigned = false)
 {
+    $number = (float)$number;
     $negative = 1;
     if ($number < 0) {
         $negative = -1;
@@ -954,12 +955,13 @@ function get_lastbarcode_of_item()
     global $con;
     $result = @mysqli_query($con, "SELECT Barcode FROM items order by Barcode+0 DESC limit 0,1");
     $num = @mysqli_num_rows($result);
+    $Barcode = 0;
     if ($num > 0) {
         while ($row = mysqli_fetch_array($result)) {
             $Barcode = $row['Barcode'];
         }
     }
-    return $Barcode + 1;
+    return (float)$Barcode + 1;
 }
 
 ###################################################

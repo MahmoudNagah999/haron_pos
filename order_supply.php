@@ -254,13 +254,13 @@ if ($_POST['inv_tax'] == '1') {
                                         if ($Discount_type == 1) {
                                             $DiscountValuet = $Discountt;
                                         } else if ($Discount_type == 2) {
-                                             $DiscountValuet = ((float) $quantityt * (float) $Pricet) * ((float) $Discountt / 100);
+                                            $DiscountValuet = ((float) $quantityt * (float) $Pricet) * ((float) $Discountt / 100);
 
                                         } else {
                                             $DiscountValuet = $Discountt;
                                         }
-                                         $Totalt = ((float) $quantityt * (float) $Pricet) - (float) $DiscountValuet;
-                                         $inv_Totalt += ((float) $quantityt * (float) $Pricet) - (float) $DiscountValuet;
+                                        $Totalt = ((float) $quantityt * (float) $Pricet) - (float) $DiscountValuet;
+                                        $inv_Totalt += ((float) $quantityt * (float) $Pricet) - (float) $DiscountValuet;
                                     }
                                     ###############################################
                                     $pay = $_POST['pay'] ?? 0;
@@ -663,95 +663,95 @@ SELECT item_status,(CASE when order_supply_type=2 then  Quantity/subqty else Qua
                                                     echo 'selected="selected"';
                                                 } ?>>المصدر</option>
                                                 <?php /* ?>
-                                              <option value="A" <?php if ($_POST['alpha'] == "A") {
-                                                  echo 'selected="selected"';
-                                              } ?>>A</option>
-                                              <option value="B" <?php if ($_POST['alpha'] == "B") {
-                                                  echo 'selected="selected"';
-                                              } ?>>B</option>
-                                              <?php */ ?>
+                                             <option value="A" <?php if ($_POST['alpha'] == "A") {
+                                                 echo 'selected="selected"';
+                                             } ?>>A</option>
+                                             <option value="B" <?php if ($_POST['alpha'] == "B") {
+                                                 echo 'selected="selected"';
+                                             } ?>>B</option>
+                                             <?php */ ?>
                                                 <option value="C" <?php if ($_POST['alpha'] == "C") {
                                                     echo 'selected="selected"';
                                                 } ?>>C</option>
                                                 <?php /* ?>
-                                              <option value="D" <?php if ($_POST['alpha'] == "D") {
-                                                  echo 'selected="selected"';
-                                              } ?>>D</option>
-                                              <option value="E" <?php if ($_POST['alpha'] == "E") {
-                                                  echo 'selected="selected"';
-                                              } ?>>E</option>
-                                              <option value="F" <?php if ($_POST['alpha'] == "F") {
-                                                  echo 'selected="selected"';
-                                              } ?>>F</option>
-                                              <option value="G" <?php if ($_POST['alpha'] == "G") {
-                                                  echo 'selected="selected"';
-                                              } ?>>G</option>
-                                              <option value="H" <?php if ($_POST['alpha'] == "H") {
-                                                  echo 'selected="selected"';
-                                              } ?>>H</option>
-                                              <?php */ ?>
+                                             <option value="D" <?php if ($_POST['alpha'] == "D") {
+                                                 echo 'selected="selected"';
+                                             } ?>>D</option>
+                                             <option value="E" <?php if ($_POST['alpha'] == "E") {
+                                                 echo 'selected="selected"';
+                                             } ?>>E</option>
+                                             <option value="F" <?php if ($_POST['alpha'] == "F") {
+                                                 echo 'selected="selected"';
+                                             } ?>>F</option>
+                                             <option value="G" <?php if ($_POST['alpha'] == "G") {
+                                                 echo 'selected="selected"';
+                                             } ?>>G</option>
+                                             <option value="H" <?php if ($_POST['alpha'] == "H") {
+                                                 echo 'selected="selected"';
+                                             } ?>>H</option>
+                                             <?php */ ?>
                                                 <option value="i" <?php if ($_POST['alpha'] == "i") {
                                                     echo 'selected="selected"';
                                                 } ?>>i</option>
                                                 <?php /* ?>
-                                              <option value="J" <?php if ($_POST['alpha'] == "J") {
-                                                  echo 'selected="selected"';
-                                              } ?>>J</option>
-                                              <option value="K" <?php if ($_POST['alpha'] == "K") {
-                                                  echo 'selected="selected"';
-                                              } ?>>K</option>
-                                              <option value="L" <?php if ($_POST['alpha'] == "L") {
-                                                  echo 'selected="selected"';
-                                              } ?>>L</option>
-                                              <option value="M" <?php if ($_POST['alpha'] == "M") {
-                                                  echo 'selected="selected"';
-                                              } ?>>M</option>
-                                              <option value="N" <?php if ($_POST['alpha'] == "N") {
-                                                  echo 'selected="selected"';
-                                              } ?>>N</option>
-                                              <option value="O" <?php if ($_POST['alpha'] == "O") {
-                                                  echo 'selected="selected"';
-                                              } ?>>O</option>
-                                              <?php */ ?>
+                                             <option value="J" <?php if ($_POST['alpha'] == "J") {
+                                                 echo 'selected="selected"';
+                                             } ?>>J</option>
+                                             <option value="K" <?php if ($_POST['alpha'] == "K") {
+                                                 echo 'selected="selected"';
+                                             } ?>>K</option>
+                                             <option value="L" <?php if ($_POST['alpha'] == "L") {
+                                                 echo 'selected="selected"';
+                                             } ?>>L</option>
+                                             <option value="M" <?php if ($_POST['alpha'] == "M") {
+                                                 echo 'selected="selected"';
+                                             } ?>>M</option>
+                                             <option value="N" <?php if ($_POST['alpha'] == "N") {
+                                                 echo 'selected="selected"';
+                                             } ?>>N</option>
+                                             <option value="O" <?php if ($_POST['alpha'] == "O") {
+                                                 echo 'selected="selected"';
+                                             } ?>>O</option>
+                                             <?php */ ?>
                                                 <option value="P" <?php if ($_POST['alpha'] == "P") {
                                                     echo 'selected="selected"';
                                                 } ?>>P</option>
                                                 <?php /* ?>
-                                              <option value="Q" <?php if ($_POST['alpha'] == "Q") {
-                                                  echo 'selected="selected"';
-                                              } ?>>Q</option>
-                                              <option value="R" <?php if ($_POST['alpha'] == "R") {
-                                                  echo 'selected="selected"';
-                                              } ?>>R</option>
-                                              <option value="S" <?php if ($_POST['alpha'] == "S") {
-                                                  echo 'selected="selected"';
-                                              } ?>>S</option>
-                                              <option value="T" <?php if ($_POST['alpha'] == "T") {
-                                                  echo 'selected="selected"';
-                                              } ?>>T</option>
-                                              <option value="U" <?php if ($_POST['alpha'] == "U") {
-                                                  echo 'selected="selected"';
-                                              } ?>>U</option>
-                                              <option value="V" <?php if ($_POST['alpha'] == "V") {
-                                                  echo 'selected="selected"';
-                                              } ?>>V</option>
-                                              <?php */ ?>
+                                             <option value="Q" <?php if ($_POST['alpha'] == "Q") {
+                                                 echo 'selected="selected"';
+                                             } ?>>Q</option>
+                                             <option value="R" <?php if ($_POST['alpha'] == "R") {
+                                                 echo 'selected="selected"';
+                                             } ?>>R</option>
+                                             <option value="S" <?php if ($_POST['alpha'] == "S") {
+                                                 echo 'selected="selected"';
+                                             } ?>>S</option>
+                                             <option value="T" <?php if ($_POST['alpha'] == "T") {
+                                                 echo 'selected="selected"';
+                                             } ?>>T</option>
+                                             <option value="U" <?php if ($_POST['alpha'] == "U") {
+                                                 echo 'selected="selected"';
+                                             } ?>>U</option>
+                                             <option value="V" <?php if ($_POST['alpha'] == "V") {
+                                                 echo 'selected="selected"';
+                                             } ?>>V</option>
+                                             <?php */ ?>
                                                 <option value="W" <?php if ($_POST['alpha'] == "W") {
                                                     echo 'selected="selected"';
                                                 } ?>>W</option>
                                                 <?php /* ?>
-                                              <option value="X" <?php if ($_POST['alpha'] == "X") {
-                                                  echo 'selected="selected"';
-                                              } ?>>X</option>
-                                              <?php */ ?>
+                                             <option value="X" <?php if ($_POST['alpha'] == "X") {
+                                                 echo 'selected="selected"';
+                                             } ?>>X</option>
+                                             <?php */ ?>
                                                 <option value="Y" <?php if ($_POST['alpha'] == "Y") {
                                                     echo 'selected="selected"';
                                                 } ?>>Y</option>
                                                 <?php /* ?>
-                                              <option value="Z" <?php if ($_POST['alpha'] == "Z") {
-                                                  echo 'selected="selected"';
-                                              } ?>>Z</option>
-                                              <?php */ ?>
+                                             <option value="Z" <?php if ($_POST['alpha'] == "Z") {
+                                                 echo 'selected="selected"';
+                                             } ?>>Z</option>
+                                             <?php */ ?>
                                             </select>
                                         </div>
                                     </div>

@@ -55,7 +55,7 @@ include "includes/inc.php";
                         ?>
                         <?php
                         $checkbox = $_POST['cb']; //from name="checkbox[]"
-                        $countCheck = count($_POST['cb']);
+                        $countCheck = (is_array($checkbox)) ? count($checkbox) : 0;
                         if ($countCheck > 0) {
                             if ($demo == 1) {
                                 echo '<div class="alert alert-warning text-right">
